@@ -75,97 +75,237 @@
     </section>
 
     <!-- ==========================================
-         Sección 2: Showcase de Métricas Interactivo
+         Sección 2: Showcase de Pantallas Reales de la App
          ========================================== -->
-    <section id="metrics" class="c-metrics-showcase">
+    <section id="metrics" class="c-showcase">
       <div class="container">
         <div class="c-section-header">
-          <span class="badge-pill">Simulador de Telemetría Dinámica</span>
+          <span class="badge-pill">Experiencia Móvil Real</span>
           <h2 class="c-section-header__title">
-            Monitoreo en tiempo real <span class="text-gradient">según tu intensidad</span>
+            Diseñada por corredores para <span class="text-gradient">corredores apasionados</span>
           </h2>
           <p class="c-section-header__subtitle">
-            Experimentá cómo responde el motor de telemetría y zonas cardíacas de TribuRunner en diferentes fases de carrera.
+            Explorá cómo se ve y se siente TribuRunner en acción: telemetría satelital en vivo, postales oficiales para tus redes y comunidad de equipo.
           </p>
         </div>
 
-        <!-- Selector de Modos de Entrenamiento -->
-        <div class="c-metrics-showcase__selector">
-          @for (mode of workoutModes; track mode.modeName) {
-            <button
-              type="button"
-              class="c-metrics-showcase__tab-btn"
-              [class.c-metrics-showcase__tab-btn--active]="activeWorkout().modeName === mode.modeName"
-              (click)="selectWorkoutMode(mode)"
-            >
-              <mat-icon class="c-metrics-showcase__tab-icon">directions_run</mat-icon>
-              <span>{{ mode.modeName }}</span>
-            </button>
-          }
+        <!-- Selector de Pantallas Reales -->
+        <div class="c-showcase__tabs">
+          <button
+            type="button"
+            class="c-showcase__tab-btn"
+            [class.c-showcase__tab-btn--active]="activeScreenTab() === 'tracking'"
+            (click)="setScreenTab('tracking')"
+          >
+            <mat-icon>timer</mat-icon>
+            <span>Tracking en Carrera</span>
+          </button>
+
+          <button
+            type="button"
+            class="c-showcase__tab-btn"
+            [class.c-showcase__tab-btn--active]="activeScreenTab() === 'postcards'"
+            (click)="setScreenTab('postcards')"
+          >
+            <mat-icon>photo_camera</mat-icon>
+            <span>Postales & Medallas</span>
+          </button>
+
+          <button
+            type="button"
+            class="c-showcase__tab-btn"
+            [class.c-showcase__tab-btn--active]="activeScreenTab() === 'tribus'"
+            (click)="setScreenTab('tribus')"
+          >
+            <mat-icon>shield</mat-icon>
+            <span>Muro de Tribu & Ranking</span>
+          </button>
         </div>
 
-        <!-- Monitor de Telemetría en Vivo -->
-        <div class="c-metrics-showcase__monitor">
-          <div class="c-metrics-showcase__monitor-header">
-            <div class="c-metrics-showcase__live-indicator">
-              <span class="c-metrics-showcase__pulse-dot"></span>
-              <span>LIVE TELEMETRY</span>
-            </div>
-            <div class="c-metrics-showcase__zone-pill">
-              {{ activeWorkout().zone }}
-            </div>
-          </div>
+        <!-- Contenedor de la Pantalla Activa con Animación -->
+        <div class="c-showcase__content">
+          <!-- ================= VISTA 1: TRACKING DE CARRERA ================= -->
+          @if (activeScreenTab() === 'tracking') {
+            <div class="c-phone-mockup c-fade-in">
+              <div class="c-phone-screen">
+                <!-- Barra de Estado Móvil -->
+                <div class="c-phone-screen__statusbar">
+                  <span>GPS Satelital Activo 🛰️</span>
+                  <span>00:42:15 • 10.02 KM</span>
+                </div>
 
-          <!-- Grilla de Métricas Principales -->
-          <div class="c-metrics-showcase__grid">
-            <!-- Métrica 1: Ritmo -->
-            <div class="c-metric-tile">
-              <span class="c-metric-tile__label">Ritmo Promedio</span>
-              <div class="c-metric-tile__value-group">
-                <span class="c-metric-tile__value c-metric-tile__value--pace">{{ activeWorkout().pace }}</span>
-                <span class="c-metric-tile__unit">min/km</span>
-              </div>
-              <div class="c-metric-tile__bar">
-                <div class="c-metric-tile__bar-fill" style="width: 78%"></div>
-              </div>
-            </div>
+                <!-- Selector de Zonas Cardíacas Karvonen -->
+                <div class="c-zone-selector">
+                  <span class="c-zone-selector__label">Zonas Cardíacas Karvonen:</span>
+                  <div class="c-zone-selector__pills">
+                    @for (z of karvonenZones; track z.zoneCode) {
+                      <button
+                        type="button"
+                        class="c-zone-pill"
+                        [class.c-zone-pill--active]="activeZone().zoneCode === z.zoneCode"
+                        [style.--zone-color]="z.color"
+                        (click)="selectZone(z)"
+                      >
+                        {{ z.zoneCode }}
+                      </button>
+                    }
+                  </div>
+                </div>
 
-            <!-- Métrica 2: Frecuencia Cardíaca -->
-            <div class="c-metric-tile">
-              <span class="c-metric-tile__label">Frecuencia Cardíaca</span>
-              <div class="c-metric-tile__value-group">
-                <span class="c-metric-tile__value c-metric-tile__value--hr">{{ activeWorkout().heartRate }}</span>
-                <span class="c-metric-tile__unit">BPM</span>
-              </div>
-              <div class="c-metric-tile__bar">
-                <div class="c-metric-tile__bar-fill c-metric-tile__bar-fill--hr" [style.width.%]="(activeWorkout().heartRate / 200) * 100"></div>
-              </div>
-            </div>
+                <!-- Métrica Principal Grande: Ritmo / Pace -->
+                <div class="c-tracking-hero" [style.border-color]="activeZone().color">
+                  <div class="c-tracking-hero__badge" [style.background]="activeZone().color">
+                    {{ activeZone().zoneName }}
+                  </div>
+                  <div class="c-tracking-hero__pace">
+                    <span class="c-tracking-hero__number">{{ activeZone().pace }}</span>
+                    <span class="c-tracking-hero__unit">Ritmo Instantáneo</span>
+                  </div>
+                  <p class="c-tracking-hero__desc">{{ activeZone().description }}</p>
+                </div>
 
-            <!-- Métrica 3: Distancia -->
-            <div class="c-metric-tile">
-              <span class="c-metric-tile__label">Distancia Recorrida</span>
-              <div class="c-metric-tile__value-group">
-                <span class="c-metric-tile__value">{{ activeWorkout().distance }}</span>
-                <span class="c-metric-tile__unit">KM</span>
-              </div>
-              <div class="c-metric-tile__bar">
-                <div class="c-metric-tile__bar-fill" style="width: 65%"></div>
+                <!-- Grilla de Telemetría Real -->
+                <div class="c-tracking-grid">
+                  <div class="c-tracking-card">
+                    <span class="c-tracking-card__label">Frecuencia Cardíaca</span>
+                    <span class="c-tracking-card__val" [style.color]="activeZone().color">{{ activeZone().bpmRange }}</span>
+                  </div>
+                  <div class="c-tracking-card">
+                    <span class="c-tracking-card__label">Distancia Acumulada</span>
+                    <span class="c-tracking-card__val">10.02 KM</span>
+                  </div>
+                  <div class="c-tracking-card">
+                    <span class="c-tracking-card__label">Cadencia Promedio</span>
+                    <span class="c-tracking-card__val">174 SPM</span>
+                  </div>
+                  <div class="c-tracking-card">
+                    <span class="c-tracking-card__label">Desnivel Acumulado</span>
+                    <span class="c-tracking-card__val">+145 m (D+)</span>
+                  </div>
+                </div>
               </div>
             </div>
+          }
 
-            <!-- Métrica 4: Cadencia -->
-            <div class="c-metric-tile">
-              <span class="c-metric-tile__label">Cadencia de Zancada</span>
-              <div class="c-metric-tile__value-group">
-                <span class="c-metric-tile__value">{{ activeWorkout().cadence }}</span>
-                <span class="c-metric-tile__unit">SPM</span>
-              </div>
-              <div class="c-metric-tile__bar">
-                <div class="c-metric-tile__bar-fill" [style.width.%]="(activeWorkout().cadence / 200) * 100"></div>
+          <!-- ================= VISTA 2: POSTAL DEPORTIVA OFICIAL ================= -->
+          @if (activeScreenTab() === 'postcards') {
+            <div class="c-postcard-wrapper c-fade-in">
+              <div class="c-postcard-card">
+                <!-- Header de la Postal -->
+                <div class="c-postcard-card__header">
+                  <div class="c-postcard-card__logo-wrap">
+                    <img src="tribu_runner_logo_letras.png" alt="Logo TribuRunner" class="c-postcard-card__logo" />
+                  </div>
+                  <span class="c-postcard-card__stamp">⚡ POSTAL OFICIAL ⚡</span>
+                </div>
+
+                <!-- Cuerpo con Foto de Fondo Simulado -->
+                <div class="c-postcard-card__hero-img">
+                  <div class="c-postcard-card__overlay">
+                    <div class="c-postcard-card__badge-tribu">
+                      ¡YA SOY PARTE DE LA TRIBU! 👑
+                    </div>
+                    <div class="c-postcard-card__stats-bar">
+                      <div>
+                        <strong>10.02 KM</strong>
+                        <span>Distancia</span>
+                      </div>
+                      <div>
+                        <strong>42m 15s</strong>
+                        <span>Tiempo</span>
+                      </div>
+                      <div>
+                        <strong>4:13 min/km</strong>
+                        <span>Ritmo Medio</span>
+                      </div>
+                      <div>
+                        <strong>162 BPM</strong>
+                        <span>Zona 4 Karvonen</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Footer de la Postal -->
+                <div class="c-postcard-card__footer">
+                  <span class="c-postcard-card__hashtag">#TribuRunner • Compartí tus logros en Instagram y WhatsApp</span>
+                  <div class="c-postcard-card__medals">
+                    <span class="c-medal-badge" title="Medalla 10K">🏅 10K Finisher</span>
+                    <span class="c-medal-badge" title="Récord de Ritmo">⚡ Mejor Ritmo</span>
+                    <span class="c-medal-badge" title="Constancia Semanal">🔥 Racha 4 Días</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          }
+
+          <!-- ================= VISTA 3: MURO DE TRIBU & RANKING ================= -->
+          @if (activeScreenTab() === 'tribus') {
+            <div class="c-tribu-community-view c-fade-in">
+              <!-- Columna 1: Muro Privado de Publicaciones -->
+              <div class="c-tribu-feed">
+                <div class="c-tribu-feed__header">
+                  <mat-icon>forum</mat-icon>
+                  <span>Muro de Equipo • Capitanes & Corredores</span>
+                </div>
+                <div class="c-feed-post">
+                  <div class="c-feed-post__author">
+                    <div class="c-feed-post__avatar">MR</div>
+                    <div>
+                      <strong>Marcos Romero (Capitán)</strong>
+                      <span class="c-feed-post__time">Hace 2 horas • Fondo 18K Parque Centenario</span>
+                    </div>
+                  </div>
+                  <p class="c-feed-post__text">
+                    "¡Tremendo fondo de domingo con la Tribu! Salieron 18K parejitos a 4:45 de promedio. ¡Felicitaciones a todos los que sumaron puntos para el ranking semanal!"
+                  </p>
+                  <div class="c-feed-post__actions">
+                    <button type="button" class="c-feed-post__btn-reaction">
+                      <span>👊 14 Puñitos</span>
+                    </button>
+                    <button type="button" class="c-feed-post__btn-reaction">
+                      <mat-icon>chat_bubble_outline</mat-icon>
+                      <span>6 Comentarios</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Columna 2: Ranking por Puntos de Experiencia (XP) -->
+              <div class="c-tribu-ranking">
+                <div class="c-tribu-ranking__header">
+                  <mat-icon>military_tech</mat-icon>
+                  <span>Ranking Semanal de Tribu</span>
+                </div>
+                <div class="c-ranking-list">
+                  <div class="c-ranking-item c-ranking-item--gold">
+                    <span class="c-ranking-item__pos">🥇 1</span>
+                    <div class="c-ranking-item__info">
+                      <strong>Lucía Valenzuela</strong>
+                      <span>52.4 KM • 1,280 XP</span>
+                    </div>
+                    <span class="c-ranking-item__badge">PRO</span>
+                  </div>
+                  <div class="c-ranking-item c-ranking-item--silver">
+                    <span class="c-ranking-item__pos">🥈 2</span>
+                    <div class="c-ranking-item__info">
+                      <strong>Gonzalo Rossi</strong>
+                      <span>44.0 KM • 1,050 XP</span>
+                    </div>
+                    <span class="c-ranking-item__badge">PRO</span>
+                  </div>
+                  <div class="c-ranking-item c-ranking-item--bronze">
+                    <span class="c-ranking-item__pos">🥉 3</span>
+                    <div class="c-ranking-item__info">
+                      <strong>Esteban Gómez</strong>
+                      <span>36.8 KM • 890 XP</span>
+                    </div>
+                    <span class="c-ranking-item__badge">ATLETA</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
         </div>
       </div>
     </section>

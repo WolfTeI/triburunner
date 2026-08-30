@@ -7,23 +7,21 @@ import { Toolbar } from '../../components/toolbar/toolbar';
 import { Header } from '../../components/header/header';
 import { Footer } from '../../components/footer/footer';
 
-/**
- * Interface para representar el estado simulado de un entrenamiento de running.
- */
-interface WorkoutSimulation {
-  readonly modeName: string;
+export type AppScreenTab = 'tracking' | 'postcards' | 'tribus';
+
+export interface KarvonenZoneSample {
+  readonly zoneName: string;
+  readonly zoneCode: string;
+  readonly bpmRange: string;
   readonly pace: string;
-  readonly heartRate: number;
-  readonly cadence: number;
-  readonly distance: string;
-  readonly calories: number;
-  readonly zone: string;
+  readonly color: string;
+  readonly description: string;
 }
 
 /**
  * Página Principal (Landing Page) de Tribu Runner.
- * Integra Toolbar, Hero Section, Showcase de métricas con Signals, Grilla de Features,
- * sección para Coaches y Atletas, y Footer.
+ * Integra Toolbar, Hero Section, Showcase interactivo de las pantallas reales de la App,
+ * Grilla de Features, sección de Tribus, Equipamiento y Footer.
  */
 @Component({
   imports: [CommonModule, MatIconModule, MatButtonModule, Toolbar, Header, Footer],
@@ -33,6 +31,47 @@ interface WorkoutSimulation {
 })
 export class Home implements OnInit {
   private readonly route = inject(ActivatedRoute);
+
+  /** Pestaña activa del Showcase de Pantallas Reales */
+  readonly activeScreenTab = signal<AppScreenTab>('tracking');
+
+  /** Zonas cardíacas Karvonen de la pantalla de Tracking */
+  readonly karvonenZones: readonly KarvonenZoneSample[] = [
+    {
+      zoneName: 'Zona 2 • Aeróbica Ligera',
+      zoneCode: 'Z2',
+      bpmRange: '120 - 138 BPM',
+      pace: '5:30 min/km',
+      color: '#00e5ff',
+      description: 'Quema de grasas y base aeróbica fundamental.',
+    },
+    {
+      zoneName: 'Zona 3 • Tempo / Ritmo',
+      zoneCode: 'Z3',
+      bpmRange: '139 - 156 BPM',
+      pace: '4:45 min/km',
+      color: '#39ff14',
+      description: 'Mejora de la capacidad aeróbica y resistencia cardiovascular.',
+    },
+    {
+      zoneName: 'Zona 4 • Umbral de Lactato',
+      zoneCode: 'Z4',
+      bpmRange: '157 - 174 BPM',
+      pace: '4:05 min/km',
+      color: '#ffb703',
+      description: 'Entrenamiento de pasadas y ritmo de carrera exigente.',
+    },
+    {
+      zoneName: 'Zona 5 • Capacidad Anaeróbica',
+      zoneCode: 'Z5',
+      bpmRange: '175+ BPM',
+      pace: '3:25 min/km',
+      color: '#ff3366',
+      description: 'Sprints finales y máxima intensidad neuromuscular.',
+    },
+  ];
+
+  readonly activeZone = signal<KarvonenZoneSample>(this.karvonenZones[1]);
 
   ngOnInit(): void {
     this.route.fragment.subscribe((fragment) => {
@@ -46,55 +85,13 @@ export class Home implements OnInit {
       }
     });
   }
-  /** Modos predefinidos de simulación para el monitor interactivo de métricas. */
-  readonly workoutModes: readonly WorkoutSimulation[] = [
-    {
-      modeName: 'Calentamiento',
-      pace: '5:45',
-      heartRate: 128,
-      cadence: 160,
-      distance: '2.10',
-      calories: 142,
-      zone: 'Zona 2 (Aeróbica Ligera)',
-    },
-    {
-      modeName: 'Fondo Aeróbico',
-      pace: '4:50',
-      heartRate: 148,
-      cadence: 168,
-      distance: '10.50',
-      calories: 680,
-      zone: 'Zona 3 (Tempo)',
-    },
-    {
-      modeName: 'Pasadas 1000m',
-      pace: '3:55',
-      heartRate: 172,
-      cadence: 182,
-      distance: '6.00',
-      calories: 430,
-      zone: 'Zona 4 (Umbral Lactato)',
-    },
-    {
-      modeName: 'Sprint Final',
-      pace: '3:20',
-      heartRate: 184,
-      cadence: 194,
-      distance: '1.20',
-      calories: 115,
-      zone: 'Zona 5 (Capacidad Anaeróbica)',
-    },
-  ];
 
-  /** Signal que contiene el modo de simulación seleccionado actualmente. */
-  readonly activeWorkout = signal<WorkoutSimulation>(this.workoutModes[1]);
+  setScreenTab(tab: AppScreenTab): void {
+    this.activeScreenTab.set(tab);
+  }
 
-  /**
-   * Cambia el modo de entrenamiento simulado activo.
-   * @param {WorkoutSimulation} mode Modo de entrenamiento a seleccionar.
-   */
-  selectWorkoutMode(mode: WorkoutSimulation): void {
-    this.activeWorkout.set(mode);
+  selectZone(zone: KarvonenZoneSample): void {
+    this.activeZone.set(zone);
   }
 }
 
