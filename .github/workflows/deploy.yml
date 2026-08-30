@@ -37,10 +37,11 @@ jobs:
       - name: Instalar Dependencias
         run: npm ci
 
-      - name: Compilar Proyecto Angular para GitHub Pages
+      - name: Compilar Proyecto Angular para GitHub Pages (Subdominio Personalizado)
         run: |
-          npm run build -- --base-href /triburunner/
+          npm run build -- --base-href /
           cp dist/TribuRunnerWeb/browser/index.html dist/TribuRunnerWeb/browser/404.html
+          echo "triburunner.wolftei.com.ar" > dist/TribuRunnerWeb/browser/CNAME
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
