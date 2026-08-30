@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { Home } from './pages/home/home';
 import { Affiliates } from './pages/affiliates/affiliates';
 import { Admin } from './pages/admin/admin';
+import { Privacy } from './pages/privacy/privacy';
 
 export const routes: Routes = [
   {
@@ -66,6 +67,36 @@ export const routes: Routes = [
       },
     },
   },
+  {
+    path: 'privacidad',
+    component: Privacy,
+    data: {
+      seo: {
+        title: 'Política de Privacidad • Tribu Runner',
+        description:
+          'Información sobre el tratamiento de datos de ubicación GPS en segundo plano, datos de salud, Firebase y derechos de los usuarios.',
+        keywords: 'privacidad tribu runner, terminos y condiciones, politicas google play',
+        ogType: 'website',
+      },
+    },
+  },
+  {
+    path: 'terminos',
+    component: Privacy,
+    data: {
+      seo: {
+        title: 'Términos y Condiciones de Servicio • Tribu Runner',
+        description:
+          'Términos y condiciones legales, descargo médico y normas comunitarias de Tribu Runner.',
+        keywords: 'terminos de servicio tribu runner, condiciones de uso',
+        ogType: 'website',
+      },
+    },
+  },
+  { path: 'politica-de-privacidad', redirectTo: 'privacidad' },
+  { path: 'privacy', redirectTo: 'privacidad' },
+  { path: 'terms', redirectTo: 'terminos' },
   { path: 'afiliados', redirectTo: 'equipamiento' },
   { path: '**', redirectTo: 'home' },
 ];
+

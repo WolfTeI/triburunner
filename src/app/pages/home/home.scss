@@ -166,7 +166,7 @@
 
     &--active {
       background: var(--tribu-primary);
-      color: #07090e;
+      color: var(--mat-sys-on-primary, #ffffff);
       border-color: var(--tribu-primary);
       box-shadow: 0 0 24px var(--tribu-primary-glow);
       transform: translateY(-2px);
@@ -197,17 +197,18 @@
 
 // --- VISTA 1: Phone Mockup Tracking ---
 .c-phone-mockup {
-  background: #000000;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: var(--tribu-surface);
+  border: 2px solid var(--tribu-border);
   border-radius: 36px;
   padding: 14px;
-  box-shadow: var(--tribu-shadow-md), 0 0 40px rgba(0, 0, 0, 0.8);
+  box-shadow: var(--tribu-shadow-md);
   max-width: 680px;
   margin: 0 auto;
 }
 
 .c-phone-screen {
-  background: #07090e;
+  background: var(--tribu-surface-card);
+  border: 1px solid var(--tribu-border);
   border-radius: 26px;
   padding: 28px 24px;
   display: flex;
@@ -222,7 +223,7 @@
     font-weight: 700;
     color: var(--tribu-text-muted);
     padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--tribu-border);
   }
 }
 
@@ -248,8 +249,8 @@
 .c-zone-pill {
   padding: 6px 16px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--tribu-border);
+  background: var(--tribu-surface);
   color: var(--tribu-text);
   font-family: var(--tribu-font-heading);
   font-weight: 800;
@@ -270,7 +271,7 @@
 }
 
 .c-tracking-hero {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--tribu-surface);
   border: 2px solid var(--tribu-primary);
   border-radius: 20px;
   padding: 24px;
@@ -279,6 +280,7 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  box-shadow: var(--tribu-shadow-sm);
   transition: border-color var(--tribu-transition-normal);
 
   &__badge {
@@ -303,7 +305,7 @@
     font-family: var(--tribu-font-heading);
     font-size: 4rem;
     font-weight: 900;
-    color: #ffffff;
+    color: var(--tribu-text);
     line-height: 1;
   }
 
@@ -333,13 +335,14 @@
 }
 
 .c-tracking-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--tribu-surface);
+  border: 1px solid var(--tribu-border);
   border-radius: 14px;
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  box-shadow: var(--tribu-shadow-sm);
 
   &__label {
     font-size: 0.75rem;
@@ -352,7 +355,7 @@
     font-family: var(--tribu-font-heading);
     font-size: 1.35rem;
     font-weight: 800;
-    color: #ffffff;
+    color: var(--tribu-text);
   }
 }
 
@@ -374,7 +377,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 18px 24px;
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--tribu-surface);
     border-bottom: 1px solid var(--tribu-border);
   }
 
@@ -397,7 +400,7 @@
 
   &__hero-img {
     height: 280px;
-    background: linear-gradient(135deg, #0e1e24 0%, #07170a 100%);
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
     position: relative;
     display: flex;
     align-items: flex-end;
@@ -420,15 +423,15 @@
     font-weight: 900;
     padding: 6px 14px;
     border-radius: 8px;
-    box-shadow: 0 4px 14px rgba(57, 255, 20, 0.4);
+    box-shadow: 0 4px 14px rgba(var(--tribu-primary-rgb), 0.4);
   }
 
   &__stats-bar {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(15, 23, 42, 0.88);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
     padding: 12px;
     text-align: center;
@@ -447,13 +450,14 @@
 
     span {
       font-size: 0.72rem;
-      color: var(--tribu-text-muted);
+      color: #94a3b8;
       text-transform: uppercase;
     }
   }
 
   &__footer {
     padding: 20px 24px;
+    background: var(--tribu-surface);
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -473,8 +477,8 @@
 }
 
 .c-medal-badge {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--tribu-surface-card);
+  border: 1px solid var(--tribu-border);
   color: var(--tribu-text);
   font-size: 0.8rem;
   font-weight: 700;

@@ -247,7 +247,7 @@
 
     &--active {
       background: var(--tribu-primary);
-      color: #07090e;
+      color: var(--mat-sys-on-primary, #ffffff);
       border-color: var(--tribu-primary);
       box-shadow: 0 0 16px var(--tribu-primary-glow);
     }
@@ -344,7 +344,7 @@
 
 // Tarjeta de Producto de Afiliados (Estilo Mercado Libre E-Commerce Destacado)
 .c-gear-card {
-  background: #0d121c;
+  background: var(--tribu-surface-card);
   border: 1.5px solid var(--tribu-border);
   border-radius: 20px;
   padding: 0;
@@ -353,12 +353,13 @@
   justify-content: space-between;
   overflow: hidden;
   position: relative;
+  box-shadow: var(--tribu-shadow-sm);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
     transform: translateY(-6px);
     border-color: var(--tribu-border-active);
-    box-shadow: 0 12px 36px rgba(var(--tribu-primary-rgb), 0.18);
+    box-shadow: var(--tribu-shadow-md), 0 12px 36px rgba(var(--tribu-primary-rgb), 0.18);
 
     .c-gear-card__product-image {
       transform: scale(1.06);
@@ -369,7 +370,7 @@
     position: relative;
     width: 100%;
     height: 230px;
-    background: #04070d;
+    background: var(--tribu-surface);
     border-bottom: 1px solid var(--tribu-border);
     display: flex;
     align-items: center;
@@ -402,14 +403,14 @@
     position: absolute;
     top: 12px;
     right: 12px;
-    background: rgba(0, 0, 0, 0.88);
+    background: var(--tribu-surface-card);
     color: var(--tribu-primary);
     border: 1px solid var(--tribu-border-active);
     font-size: 0.75rem;
     font-weight: 800;
     padding: 4px 10px;
     border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--tribu-shadow-sm);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -425,7 +426,7 @@
   &__category-tag {
     font-size: 0.75rem;
     font-weight: 800;
-    color: #00e5ff;
+    color: var(--tribu-primary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -434,7 +435,7 @@
     font-family: var(--tribu-font-heading);
     font-size: 1.15rem;
     font-weight: 800;
-    color: #ffffff;
+    color: var(--tribu-text);
     line-height: 1.35;
   }
 

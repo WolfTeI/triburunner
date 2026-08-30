@@ -1,0 +1,203 @@
+<div class="c-privacy-page">
+  <app-toolbar></app-toolbar>
+
+  <main class="c-privacy-page__main">
+    <div class="container">
+      <!-- Encabezado de la página -->
+      <div class="c-privacy-header">
+        <span class="badge-pill">Información Legal Oficial</span>
+        <h1 class="c-privacy-header__title">
+          Política de Privacidad y <span class="text-gradient">Términos de Servicio</span>
+        </h1>
+        <p class="c-privacy-header__subtitle">
+          TribuRunner se compromete a proteger tu privacidad y garantizar la máxima transparencia en el tratamiento de tus datos de entrenamiento, salud y ubicación.
+        </p>
+        <div class="c-privacy-header__meta">
+          <span>Última actualización: 30 de Agosto de 2026</span>
+          <span>•</span>
+          <span>Desarrollador: <strong>WolfTeI</strong></span>
+        </div>
+      </div>
+
+      <!-- Selector de Pestañas Legal -->
+      <div class="c-privacy-tabs">
+        <button
+          type="button"
+          class="c-privacy-tabs__btn"
+          [class.c-privacy-tabs__btn--active]="activeTab === 'privacy'"
+          (click)="setTab('privacy')"
+        >
+          <mat-icon>security</mat-icon>
+          <span>Política de Privacidad</span>
+        </button>
+
+        <button
+          type="button"
+          class="c-privacy-tabs__btn"
+          [class.c-privacy-tabs__btn--active]="activeTab === 'terms'"
+          (click)="setTab('terms')"
+        >
+          <mat-icon>gavel</mat-icon>
+          <span>Términos y Condiciones</span>
+        </button>
+      </div>
+
+      <!-- Contenedor del Documento Legal -->
+      <div class="c-privacy-doc">
+        <!-- ================= PESTAÑA 1: POLÍTICA DE PRIVACIDAD ================= -->
+        @if (activeTab === 'privacy') {
+          <article class="c-doc-content c-fade-in">
+            <h2>1. Introducción y Alcance</h2>
+            <p>
+              La presente Política de Privacidad describe cómo <strong>TribuRunner</strong> (desarrollada por <strong>WolfTeI</strong>, con sitio web oficial en <a href="https://triburunner.wolftei.com.ar" target="_blank" rel="noopener">https://triburunner.wolftei.com.ar</a>) recopila, utiliza, almacena y protege la información personal, biométrica y de ubicación de los usuarios de nuestra aplicación móvil para Android y nuestra plataforma web.
+            </p>
+
+            <h2>2. Permisos y Datos de Ubicación (GPS en Primer y Segundo Plano)</h2>
+            <p>
+              TribuRunner es una aplicación de seguimiento deportivo y requiere acceso a la <strong>Ubicación Precisa (GPS)</strong> para medir distancia, ritmo instantáneo (Pace), altimetría y calcular rutas de entrenamiento.
+            </p>
+            <div class="c-notice-box">
+              <mat-icon class="c-notice-box__icon">gps_fixed</mat-icon>
+              <div>
+                <strong>Uso de Ubicación en Segundo Plano (Background Location):</strong>
+                <p>
+                  TribuRunner recopila datos de ubicación cuando iniciás una sesión de entrenamiento activa, <strong>incluso cuando la app está en segundo plano o la pantalla del dispositivo se encuentra apagada</strong>. Esto es indispensable para registrar fielmente el recorrido sin interrupciones por bloqueo de pantalla. La recopilación de GPS se detiene inmediatamente al presionar el botón de finalizar o pausar carrera. <strong>Tus coordenadas de ruta no se transmiten a otros usuarios en tiempo real.</strong>
+                </p>
+              </div>
+            </div>
+
+            <h2>3. Datos Biométricos, Sensores y Arquitectura Local-First (Privacidad Absoluta)</h2>
+            <p>
+              Para corredores que utilicen sensores de frecuencia cardíaca (bandas pectorales Bluetooth LE o relojes vinculados a través de <strong>Google Health Connect</strong>), TribuRunner procesa localmente:
+            </p>
+            <ul>
+              <li><strong>Frecuencia Cardíaca (BPM):</strong> Utilizada exclusivamente en tiempo real para calcular las zonas de entrenamiento según la fórmula de Karvonen (Z1 a Z5).</li>
+              <li><strong>Cadencia de Zancada (SPM) y Métricas de Rendimiento:</strong> Estimadas mediante sensores locales del dispositivo.</li>
+              <li><strong>Calorías y Zonas de Esfuerzo:</strong> Estimaciones calculadas directamente en el procesador de tu teléfono.</li>
+            </ul>
+            <div class="c-notice-box">
+              <mat-icon class="c-notice-box__icon">lock</mat-icon>
+              <div>
+                <strong>Almacenamiento 100% Local de Datos Biométricos:</strong>
+                <p>
+                  <strong>Tus datos biométricos (frecuencia cardíaca instantánea, zonas Karvonen, gráficos de pulso y telemetría de salud) se guardan ÚNICAMENTE de forma local en la memoria de tu dispositivo.</strong> TribuRunner <strong>NO</strong> sube, no transmite ni almacena tus registros biométricos en la nube ni en ningún servidor externo. Tu salud es tuya y permanece en tu teléfono.
+                </p>
+              </div>
+            </div>
+
+            <h2>4. Almacenamiento Seguro en la Nube (Google Firebase)</h2>
+            <p>
+              La infraestructura de <strong>Google Firebase</strong> (Firestore, Authentication y Cloud Storage) se utiliza de forma mínima y segura <strong>únicamente</strong> para:
+            </p>
+            <ul>
+              <li>Gestión de tu cuenta de usuario e inicio de sesión seguro.</li>
+              <li>Pertenencia y nombre de tu Tribu / Equipo.</li>
+              <li>Publicaciones comunitarias, comentarios y fotos de postales que elijas compartir voluntariamente en el muro del equipo.</li>
+            </ul>
+            <p>
+              Todos estos datos se transmiten mediante protocolos cifrados con TLS 1.3 y se almacenan con cifrado AES-256 en reposo.
+            </p>
+
+            <h2>5. Muro Comunitario y Visibilidad de Tribus</h2>
+            <p>
+              Al unirte o crear una Tribu, las publicaciones, fotos de postales deportivas con el hashtag #TribuRunner y tiempos de carreras virtuales asincrónicas que decidas compartir serán visibles para los miembros de tu equipo. Podés configurar tu perfil para mantener entrenamientos privados en cualquier momento.
+            </p>
+
+            <h2>6. Publicidad y Servicios de Terceros</h2>
+            <p>
+              Nuestra aplicación integra los siguientes servicios de terceros que pueden recopilar identificadores de dispositivo con fines analíticos o publicitarios:
+            </p>
+            <ul>
+              <li><strong>Google Play Services & Google Play Billing:</strong> Para la gestión segura de compras dentro de la app y suscripciones PRO.</li>
+              <li><strong>Google Mobile Ads (AdMob):</strong> Para mostrar publicidad en la versión gratuita (FREE) de la aplicación.</li>
+              <li><strong>Firebase Analytics & Crashlytics:</strong> Para monitoreo de rendimiento, detección de fallos y mejora de estabilidad.</li>
+            </ul>
+
+            <h2>7. Eliminación Completa de Cuenta y Datos (Derecho al Olvido)</h2>
+            <p>
+              En cumplimiento estricto con las directivas de privacidad de Google Play Store y las regulaciones internacionales de protección de datos personales, el usuario tiene el derecho inalienable de eliminar toda su información en cualquier momento:
+            </p>
+            <div class="c-notice-box c-notice-box--highlight">
+              <mat-icon class="c-notice-box__icon">delete_forever</mat-icon>
+              <div>
+                <strong>Mecanismo de Eliminación Directa:</strong>
+                <p>
+                  Podés solicitar la eliminación instantánea e irrevocable de tu cuenta, historial de carreras y publicaciones directamente desde la aplicación móvil en: <strong>Perfil ➔ Ajustes ➔ Zona Peligrosa ➔ Eliminar Cuenta y Datos</strong>. Todos tus registros asociados en la base de datos de Firebase serán eliminados de manera permanente.
+                </p>
+              </div>
+            </div>
+
+            <h2>8. Contacto</h2>
+            <p>
+              Si tenés dudas, consultas o requerimientos sobre el tratamiento de tus datos personales, podés comunicarte con nuestro equipo de desarrollo:
+            </p>
+            <p>
+              <strong>WolfTeI Development Team</strong><br />
+              Sitio Web: <a href="https://triburunner.wolftei.com.ar" target="_blank" rel="noopener">https://triburunner.wolftei.com.ar</a><br />
+              Email de Contacto: <a href="mailto:info@wolftei.com.ar">info&#64;wolftei.com.ar</a>
+            </p>
+          </article>
+        }
+
+        <!-- ================= PESTAÑA 2: TÉRMINOS Y CONDICIONES ================= -->
+        @if (activeTab === 'terms') {
+          <article class="c-doc-content c-fade-in">
+            <h2>1. Aceptación de los Términos</h2>
+            <p>
+              Al descargar, instalar o utilizar la aplicación móvil TribuRunner o nuestro portal web, aceptás quedar legalmente vinculado por los presentes Términos y Condiciones. Si no estás de acuerdo con alguno de ellos, te solicitamos no utilizar nuestros servicios.
+            </p>
+
+            <h2>2. Descargo de Responsabilidad Médica y de Salud</h2>
+            <div class="c-notice-box c-notice-box--warning">
+              <mat-icon class="c-notice-box__icon">health_and_safety</mat-icon>
+              <div>
+                <strong>AVISO MÉDICO IMPORTANTE:</strong>
+                <p>
+                  TribuRunner es una herramienta tecnológica de seguimiento deportivo y entretenimiento atlético. <strong>No constituye ni sustituye el asesoramiento, diagnóstico ni tratamiento médico, cardiológico o nutricional profesional.</strong> Se recomienda consultar a un médico especialista antes de iniciar cualquier programa de entrenamiento intenso o realizar mediciones de zonas cardíacas máximas. El uso de la app es bajo tu exclusiva responsabilidad y riesgo.
+                </p>
+              </div>
+            </div>
+
+            <h2>3. Uso Aceptable y Normas de la Comunidad</h2>
+            <p>
+              Al interactuar en los muros de equipo, tablas de posiciones y carreras virtuales de TribuRunner, te comprometés a:
+            </p>
+            <ul>
+              <li>No publicar contenido ofensivo, discriminatorio, difamatorio, obsceno o que viole derechos de terceros.</li>
+              <li>No manipular los datos de GPS ni registrar sesiones fraudulentas para alterar las tablas de clasificación.</li>
+              <li>Mantener una conducta deportiva respetuosa y de mutua motivación hacia los demás integrantes de la Tribu.</li>
+            </ul>
+            <p>
+              WolfTeI se reserva el derecho de suspender o revocar el acceso a cualquier usuario que infrinja estas normas de convivencia.
+            </p>
+
+            <h2>4. Suscripciones PRO y Compras en la Aplicación</h2>
+            <p>
+              TribuRunner ofrece una versión gratuita financiada mediante publicidad y una suscripción PRO que elimina los anuncios y desbloquea métricas avanzadas. Todas las transacciones se procesan de forma segura a través de <strong>Google Play Billing</strong> conforme a los términos comerciales de Google Play Store.
+            </p>
+
+            <h2>5. Propiedad Intelectual</h2>
+            <p>
+              Todo el código fuente, logotipos, marcas comerciales (#TribuRunner, WolfTeI), algoritmos de cálculo de zonas Karvonen, diseño de postales deportivas y elementos gráficos son propiedad exclusiva de <strong>WolfTeI</strong> y están protegidos por las leyes de propiedad intelectual.
+            </p>
+
+            <h2>6. Modificaciones de los Términos</h2>
+            <p>
+              Nos reservamos el derecho de modificar estos términos en cualquier momento para reflejar actualizaciones funcionales o normativas. Las modificaciones se publicarán en esta página con su fecha de revisión actualizada.
+            </p>
+          </article>
+        }
+      </div>
+
+      <!-- Volver a la Home -->
+      <div class="c-privacy-actions">
+        <a routerLink="/home" class="c-btn c-btn--primary">
+          <mat-icon class="c-btn__icon">arrow_back</mat-icon>
+          <span>Volver al Inicio</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <app-footer></app-footer>
+</div>
