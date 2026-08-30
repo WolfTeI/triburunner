@@ -8,7 +8,7 @@
       <!-- Badge de Novedad -->
       <div class="c-hero__badge badge-pill">
         <mat-icon class="c-hero__badge-icon">bolt</mat-icon>
-        <span>Ecosistema Running & Coaching 2.0</span>
+        <span>Ecosistema Running & Tribus 2.0</span>
       </div>
 
       <!-- Título Principal -->
@@ -19,17 +19,22 @@
 
       <!-- Descripción -->
       <p class="c-hero__description">
-        La plataforma definitiva diseñada para corredores apasionados y entrenadores de alto nivel.
-        Tracking GPS de máxima precisión, sincronización de rutinas, análisis de zonas cardíacas y desafíos grupales.
+        La plataforma definitiva creada por y para corredores apasionados.
+        Tracking GPS de máxima precisión, zonas cardíacas en vivo, fondos grupales y el espíritu de equipo de tu Tribu.
       </p>
 
       <!-- Botones de Acción / CTA -->
       <div class="c-hero__actions">
-        <a href="#download" class="c-btn c-btn--primary">
-          <mat-icon class="c-btn__icon">download</mat-icon>
-          <span>Descargar App Gratis</span>
+        <a
+          href="https://play.google.com/store/apps/details?id=ar.com.wolftei.triburunner"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="c-btn c-btn--primary"
+        >
+          <mat-icon class="c-btn__icon">shop</mat-icon>
+          <span>Descargar en Google Play</span>
         </a>
-        <a href="#metrics" class="c-btn c-btn--secondary">
+        <a href="#metrics" (click)="scrollTo('metrics', $event)" class="c-btn c-btn--secondary">
           <mat-icon class="c-btn__icon">insights</mat-icon>
           <span>Ver Métricas en Vivo</span>
         </a>
@@ -39,7 +44,7 @@
       <div class="c-hero__stats">
         <div class="c-hero__stat-item">
           <span class="c-hero__stat-number">100%</span>
-          <span class="c-hero__stat-label">Tracking GPS en tiempo real</span>
+          <span class="c-hero__stat-label">Privacidad Local de Rutas</span>
         </div>
         <div class="c-hero__stat-divider" aria-hidden="true"></div>
         <div class="c-hero__stat-item">
@@ -48,8 +53,8 @@
         </div>
         <div class="c-hero__stat-divider" aria-hidden="true"></div>
         <div class="c-hero__stat-item">
-          <span class="c-hero__stat-number">Live</span>
-          <span class="c-hero__stat-label">Gestión para Coaches</span>
+          <span class="c-hero__stat-number">Eventos</span>
+          <span class="c-hero__stat-label">Carreras Virtuales</span>
         </div>
       </div>
     </div>

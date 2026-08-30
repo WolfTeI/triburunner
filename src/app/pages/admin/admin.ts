@@ -71,7 +71,7 @@ export class Admin implements OnInit, OnDestroy {
   readonly newPromoEligibility = signal<PromoEligibilityType>('ANY_USER');
   readonly newPromoMaxUses = signal<number>(10);
   readonly newPromoDescription = signal<string>('');
-  readonly newPromoExpiresDays = signal<number>(30);
+  readonly newPromoExpiresDate = signal<string>('');
 
   // Estados de Formulario de Evento Oficial
   readonly isCreatingEvent = signal<boolean>(false);
@@ -254,8 +254,14 @@ export class Admin implements OnInit, OnDestroy {
       this.showToast('Debes ingresar un código promocional (ej: TRIBU2026)', 'error');
       return;
     }
-    const days = Number(this.newPromoExpiresDays()) || 30;
-    const expiresAt = days > 0 ? Date.now() + days * 24 * 60 * 60 * 1000 : null;
+
+    let expiresAt: number | null = null;
+    if (this.newPromoExpiresDate()) {
+      const parsed = new Date(this.newPromoExpiresDate() + 'T23:59:59').getTime();
+      if (!isNaN(parsed) && parsed > 0) {
+        expiresAt = parsed;
+      }
+    }
 
     const ok = await this.adminService.createPromoCode({
       code,
@@ -270,6 +276,7 @@ export class Admin implements OnInit, OnDestroy {
       this.showToast(`¡Código promocional ${code} creado con éxito! 🎁`, 'success');
       this.newPromoCode.set('');
       this.newPromoDescription.set('');
+      this.newPromoExpiresDate.set('');
       this.selectedTab.set(2);
     } else {
       this.showToast('Error al generar el código promocional.', 'error');
@@ -288,60 +295,73 @@ export class Admin implements OnInit, OnDestroy {
 
   /**
    * Formatea la fecha de caducidad con indicación de días restantes.
+   * Maneja milisegundos, segundos (timestamps Unix) y objetos Date/Timestamp.
    */
   formatPromoExpiry(expiresAt: any): string {
-    if (!expiresAt) return 'Nunca vence ♾️';
+    if (expiresAt === null || expiresAt === undefined || expiresAt === 0 || expiresAt === 'null') {
+      return 'Sin Vencimiento ♾️';
+    }
+
     let timeMs = 0;
     if (typeof expiresAt === 'number') {
-      timeMs = expiresAt;
+      timeMs = expiresAt < 10000000000 ? expiresAt * 1000 : expiresAt;
     } else if (expiresAt?.seconds) {
       timeMs = expiresAt.seconds * 1000;
     } else if (expiresAt?.toDate && typeof expiresAt.toDate === 'function') {
       timeMs = expiresAt.toDate().getTime();
     } else if (expiresAt instanceof Date) {
       timeMs = expiresAt.getTime();
+    } else if (typeof expiresAt === 'string') {
+      const parsed = Date.parse(expiresAt);
+      if (!isNaN(parsed)) timeMs = parsed;
     }
-    if (!timeMs) return 'Nunca vence ♾️';
+
+    if (!timeMs || timeMs <= 0) return 'Sin Vencimiento ♾️';
+
+    const d = new Date(timeMs);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    const dateFormatted = `${day}/${month}/${year}`;
 
     const diffMs = timeMs - Date.now();
     const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-    const dateStr = new Date(timeMs).toLocaleDateString('es-AR', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    });
 
     if (diffDays < 0) {
-      return `${dateStr} (Vencido ⚠️)`;
+      return `${dateFormatted} (Vencido ⚠️)`;
     } else if (diffDays === 0) {
-      return `${dateStr} (Vence hoy ⏳)`;
+      return `${dateFormatted} (Vence hoy ⏳)`;
     } else {
-      return `${dateStr} (${diffDays} días rest.)`;
+      return `${dateFormatted} (${diffDays} días rest.)`;
     }
   }
 
   /**
-   * Formatea la fecha de creación del código.
+   * Formatea la fecha de creación del código en formato DD/MM/AAAA.
    */
   formatPromoCreation(createdAt: any): string {
     if (!createdAt) return 'Reciente';
     let timeMs = 0;
     if (typeof createdAt === 'number') {
-      timeMs = createdAt;
+      timeMs = createdAt < 10000000000 ? createdAt * 1000 : createdAt;
     } else if (createdAt?.seconds) {
       timeMs = createdAt.seconds * 1000;
     } else if (createdAt?.toDate && typeof createdAt.toDate === 'function') {
       timeMs = createdAt.toDate().getTime();
     } else if (createdAt instanceof Date) {
       timeMs = createdAt.getTime();
+    } else if (typeof createdAt === 'string') {
+      const parsed = Date.parse(createdAt);
+      if (!isNaN(parsed)) timeMs = parsed;
     }
+
     if (!timeMs) return 'Reciente';
 
-    return new Date(timeMs).toLocaleDateString('es-AR', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    });
+    const d = new Date(timeMs);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
   }
 
   copyToClipboard(text: string): void {

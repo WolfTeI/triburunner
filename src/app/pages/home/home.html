@@ -47,28 +47,28 @@
             <div class="c-feature-card__tag">Bluetooth Low Energy (BLE)</div>
           </article>
 
-          <!-- Card 3: Plataforma para Entrenadores y Coaches -->
-          <article class="c-feature-card">
-            <div class="c-feature-card__icon-wrapper">
-              <mat-icon class="c-feature-card__icon">sports</mat-icon>
-            </div>
-            <h3 class="c-feature-card__title">Gestión para Coaches & Running Teams</h3>
-            <p class="c-feature-card__text">
-              Planificación semanal de microciclos, pasadas fraccionadas con zonas objetivo, fondos progresivos, control de escala de esfuerzo percibido (RPE) y recordatorios automáticos de pesaje y composición corporal.
-            </p>
-            <div class="c-feature-card__tag">Planes 1 a 1 y por Grupos</div>
-          </article>
-
-          <!-- Card 4: Fondos Grupales y Live Pelotón -->
+          <!-- Card 3: Creá o Unite a tu Tribu -->
           <article class="c-feature-card">
             <div class="c-feature-card__icon-wrapper">
               <mat-icon class="c-feature-card__icon">groups</mat-icon>
             </div>
-            <h3 class="c-feature-card__title">Fondos Grupales & Telemetría en Vivo</h3>
+            <h3 class="c-feature-card__title">Creá o Unite a tu Tribu Running</h3>
             <p class="c-feature-card__text">
-              Cockpit en vivo de la Tribu. Visualizá la ubicación y el ritmo de cada compañero de equipo durante los fondos de fin de semana, ganá puntos de experiencia (XP) y competí en el ranking de equipos.
+              Formá tu propio equipo o sumate a una Tribu existente. Compartí entrenamientos en el muro interno privado, sumá puntos XP para el ranking colectivo y motivá a tus compañeros de ruta.
             </p>
-            <div class="c-feature-card__tag">Live Cockpit de Pelotón</div>
+            <div class="c-feature-card__tag">Muro Privado & Ranking de Tribus</div>
+          </article>
+
+          <!-- Card 4: Entrenamientos Grupales & Carreras Virtuales -->
+          <article class="c-feature-card">
+            <div class="c-feature-card__icon-wrapper">
+              <mat-icon class="c-feature-card__icon">emoji_events</mat-icon>
+            </div>
+            <h3 class="c-feature-card__title">Entrenamientos Grupales & Carreras Virtuales</h3>
+            <p class="c-feature-card__text">
+              Organizá salidas y fondos con tu Tribu o participá en carreras virtuales asincrónicas. Corré en tu circuito habitual, registrá tu tiempo dentro de la fecha del evento y sumá puntos XP para el ranking colectivo.
+            </p>
+            <div class="c-feature-card__tag">Desafíos Asincrónicos & Grupos</div>
           </article>
         </div>
       </div>
@@ -98,22 +98,21 @@
               [class.c-metrics-showcase__tab-btn--active]="activeWorkout().modeName === mode.modeName"
               (click)="selectWorkoutMode(mode)"
             >
-              {{ mode.modeName }}
+              <mat-icon class="c-metrics-showcase__tab-icon">directions_run</mat-icon>
+              <span>{{ mode.modeName }}</span>
             </button>
           }
         </div>
 
-        <!-- Consola de Telemetría Dinámica -->
-        <div class="c-metrics-showcase__console">
-          <!-- Header de la consola -->
-          <div class="c-metrics-showcase__console-header">
-            <div class="c-metrics-showcase__live-pill">
-              <span class="c-metrics-showcase__live-dot"></span>
-              <span>SESIÓN TELEMÉTRICA • {{ activeWorkout().modeName }}</span>
+        <!-- Monitor de Telemetría en Vivo -->
+        <div class="c-metrics-showcase__monitor">
+          <div class="c-metrics-showcase__monitor-header">
+            <div class="c-metrics-showcase__live-indicator">
+              <span class="c-metrics-showcase__pulse-dot"></span>
+              <span>LIVE TELEMETRY</span>
             </div>
             <div class="c-metrics-showcase__zone-pill">
-              <mat-icon class="c-metrics-showcase__zone-icon">favorite</mat-icon>
-              <span>{{ activeWorkout().zone }}</span>
+              {{ activeWorkout().zone }}
             </div>
           </div>
 
@@ -121,37 +120,37 @@
           <div class="c-metrics-showcase__grid">
             <!-- Métrica 1: Ritmo -->
             <div class="c-metric-tile">
-              <span class="c-metric-tile__label">Ritmo Promedio (Pace)</span>
+              <span class="c-metric-tile__label">Ritmo Promedio</span>
               <div class="c-metric-tile__value-group">
-                <span class="c-metric-tile__value">{{ activeWorkout().pace }}</span>
+                <span class="c-metric-tile__value c-metric-tile__value--pace">{{ activeWorkout().pace }}</span>
                 <span class="c-metric-tile__unit">min/km</span>
               </div>
               <div class="c-metric-tile__bar">
-                <div class="c-metric-tile__bar-fill" [style.width.%]="85"></div>
+                <div class="c-metric-tile__bar-fill" style="width: 78%"></div>
               </div>
             </div>
 
             <!-- Métrica 2: Frecuencia Cardíaca -->
-            <div class="c-metric-tile c-metric-tile--accent">
-              <span class="c-metric-tile__label">Frecuencia Cardíaca (HR)</span>
+            <div class="c-metric-tile">
+              <span class="c-metric-tile__label">Frecuencia Cardíaca</span>
               <div class="c-metric-tile__value-group">
-                <span class="c-metric-tile__value">{{ activeWorkout().heartRate }}</span>
+                <span class="c-metric-tile__value c-metric-tile__value--hr">{{ activeWorkout().heartRate }}</span>
                 <span class="c-metric-tile__unit">BPM</span>
               </div>
               <div class="c-metric-tile__bar">
-                <div class="c-metric-tile__bar-fill c-metric-tile__bar-fill--bpm" [style.width.%]="(activeWorkout().heartRate / 200) * 100"></div>
+                <div class="c-metric-tile__bar-fill c-metric-tile__bar-fill--hr" [style.width.%]="(activeWorkout().heartRate / 200) * 100"></div>
               </div>
             </div>
 
             <!-- Métrica 3: Distancia -->
             <div class="c-metric-tile">
-              <span class="c-metric-tile__label">Distancia Acumulada</span>
+              <span class="c-metric-tile__label">Distancia Recorrida</span>
               <div class="c-metric-tile__value-group">
                 <span class="c-metric-tile__value">{{ activeWorkout().distance }}</span>
                 <span class="c-metric-tile__unit">KM</span>
               </div>
               <div class="c-metric-tile__bar">
-                <div class="c-metric-tile__bar-fill" [style.width.%]="70"></div>
+                <div class="c-metric-tile__bar-fill" style="width: 65%"></div>
               </div>
             </div>
 
@@ -172,57 +171,71 @@
     </section>
 
     <!-- ==========================================
-         Sección 3: Atletas y Entrenadores
+         Sección 3: Atletas y Tribus
          ========================================== -->
-    <section id="coaches" class="c-roles-section">
+    <section id="tribus" class="c-roles-section">
       <div class="container">
+        <div class="c-section-header">
+          <span class="badge-pill">Espíritu Colectivo & Pasión Runner</span>
+          <h2 class="c-section-header__title">
+            Corré a tu ritmo o <span class="text-gradient">liderá tu propia Tribu</span>
+          </h2>
+          <p class="c-section-header__subtitle">
+            Tanto si salís a sumar kilómetros en solitario como si organizás los fondos de tu grupo, TribuRunner es tu lugar de encuentro.
+          </p>
+        </div>
+
         <div class="c-roles-section__grid">
-          <!-- Card para Atletas -->
+          <!-- Card para Corredores Apasionados -->
           <div class="c-role-card">
             <div class="c-role-card__header">
-              <div class="c-role-card__badge">Para Corredores & Atletas</div>
-              <h3 class="c-role-card__title">Dominá tus marcas y alcanzá el podio</h3>
+              <div class="c-role-card__badge">Para Corredores Apasionados</div>
+              <h3 class="c-role-card__title">Superá tus marcas y alcanzá nuevas metas</h3>
               <p class="c-role-card__text">
-                Desde tus primeros 5K hasta maratones de 42K y ultramaratones de montaña, TribuRunner te brinda análisis de fatiga, alertas de ritmo por audio y medallas de constancia.
+                Desde tus primeros 5K hasta maratones de 42K y trail de montaña. Zonas cardíacas en tiempo real, alertas de ritmo, medallas por constancia y postales oficiales listas para compartir.
               </p>
             </div>
             <ul class="c-role-card__list">
               <li>
                 <mat-icon class="c-role-card__check-icon">check_circle</mat-icon>
-                <span>Registro automático de splits por kilómetro y métricas de elevación.</span>
+                <span>Tracking GPS de alta precisión con filtrado de ritmo y elevación acumulada.</span>
               </li>
               <li>
                 <mat-icon class="c-role-card__check-icon">check_circle</mat-icon>
-                <span>Sincronización directa con las sesiones asignadas por tu coach.</span>
+                <span>Monitoreo de zonas cardíacas Karvonen con compatibilidad a bandas BLE.</span>
               </li>
               <li>
                 <mat-icon class="c-role-card__check-icon">check_circle</mat-icon>
-                <span>Muro social interactivo: compartí tus entrenamientos con fotos y puñitos.</span>
+                <span>Muro social interactivo: compartí tus fondos, fotos y recibí puñitos 👊 de la comunidad.</span>
               </li>
             </ul>
           </div>
 
-          <!-- Card para Entrenadores / Teams -->
+          <!-- Card para Tribus & Capitanes -->
           <div class="c-role-card c-role-card--highlight">
             <div class="c-role-card__header">
-              <div class="c-role-card__badge c-role-card__badge--coach">Para Coaches & Running Teams</div>
-              <h3 class="c-role-card__title">Estructura y control total para tu equipo</h3>
+              <div class="c-role-card__badge c-role-card__badge--coach">Para Capitanes & Tribus</div>
+              <h3 class="c-role-card__title">El punto de encuentro para tu grupo runner</h3>
               <p class="c-role-card__text">
-                Optimizá la gestión de tu running team. Creá microciclos con pasadas a ritmos objetivo, controlá el cumplimiento de cada alumno y visualizá su evolución física sin planillas manuales.
+                Creá tu propia Tribu, sumá a tus compañeros de ruta, organicen salidas grupales y midan la sumatoria de kilómetros de equipo en la tabla general de posiciones.
               </p>
             </div>
             <ul class="c-role-card__list">
               <li>
                 <mat-icon class="c-role-card__check-icon">check_circle</mat-icon>
-                <span>Constructor ágil de series de pasadas, fondos progresivos y tiradas largas.</span>
+                <span>Muro privado exclusivo con publicaciones, fotos y comentarios para los miembros.</span>
               </li>
               <li>
                 <mat-icon class="c-role-card__check-icon">check_circle</mat-icon>
-                <span>Monitoreo de cumplimiento efectivo frente al ritmo objetivo prescrito.</span>
+                <span>Ranking interno de miembros por kilómetros acumulados y puntos de experiencia (XP).</span>
               </li>
               <li>
                 <mat-icon class="c-role-card__check-icon">check_circle</mat-icon>
-                <span>Canal de feedback bidireccional y registro de evolución de peso corporal.</span>
+                <span>Organización de salidas grupales y participación en carreras virtuales asincrónicas.</span>
+              </li>
+              <li>
+                <mat-icon class="c-role-card__check-icon">check_circle</mat-icon>
+                <span>Privacidad First: tus rutas y biometría se procesan de forma privada en tu dispositivo.</span>
               </li>
             </ul>
           </div>

@@ -12,5 +12,14 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './header.scss',
   templateUrl: './header.html',
 })
-export class Header {}
+export class Header {
+  scrollTo(fragment: string, event?: Event): void {
+    if (event) event.preventDefault();
+    const el = document.getElementById(fragment);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.history.pushState(null, '', `/home#${fragment}`);
+    }
+  }
+}
 

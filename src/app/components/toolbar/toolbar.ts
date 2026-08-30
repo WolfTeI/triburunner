@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,6 +17,8 @@ import { FirebaseService } from '../../services/firebase.service';
   templateUrl: './toolbar.html',
 })
 export class Toolbar {
+  private readonly router = inject(Router);
+
   /** Servicio para el manejo del tema (Modo Claro / Oscuro). */
   protected readonly themeService = inject(Theme);
 
@@ -42,5 +44,35 @@ export class Toolbar {
    */
   closeMobileMenu(): void {
     this.isMobileMenuOpen.set(false);
+  }
+
+  /**
+   * Realiza un desplazamiento suave (smooth scroll) hacia una sección de la landing page.
+   * Funciona tanto si el usuario ya está en la home como si navega desde otra pantalla.
+   */
+  scrollToSection(fragment: string, event?: Event): void {
+    if (event) {
+      event.preventDefault();
+    }
+    this.closeMobileMenu();
+
+    const currentUrl = this.router.url;
+    if (currentUrl === '/' || currentUrl.startsWith('/home')) {
+      const element = document.getElementById(fragment);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Actualizar URL sin recargar
+        window.history.pushState(null, '', `/home#${fragment}`);
+      }
+    } else {
+      this.router.navigate(['/home'], { fragment }).then(() => {
+        setTimeout(() => {
+          const element = document.getElementById(fragment);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 150);
+      });
+    }
   }
 }

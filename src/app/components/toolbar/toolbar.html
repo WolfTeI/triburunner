@@ -11,13 +11,13 @@
     <!-- Enlaces de Navegación de Escritorio -->
     <ul class="c-toolbar__nav-list">
       <li class="c-toolbar__nav-item">
-        <a routerLink="/home" fragment="features" class="c-toolbar__nav-link">Funciones</a>
+        <a href="/home#features" (click)="scrollToSection('features', $event)" class="c-toolbar__nav-link">Funciones</a>
       </li>
       <li class="c-toolbar__nav-item">
-        <a routerLink="/home" fragment="metrics" class="c-toolbar__nav-link">Métricas & Zonas</a>
+        <a href="/home#metrics" (click)="scrollToSection('metrics', $event)" class="c-toolbar__nav-link">Métricas & Zonas</a>
       </li>
       <li class="c-toolbar__nav-item">
-        <a routerLink="/home" fragment="coaches" class="c-toolbar__nav-link">Para Coaches</a>
+        <a href="/home#tribus" (click)="scrollToSection('tribus', $event)" class="c-toolbar__nav-link">Tribus</a>
       </li>
       <li class="c-toolbar__nav-item">
         <a routerLink="/equipamiento" class="c-toolbar__nav-link c-toolbar__nav-link--highlight">
@@ -50,10 +50,15 @@
         </mat-slide-toggle>
       </div>
 
-      <!-- Botón CTA Desktop -->
-      <a routerLink="/home" fragment="download" class="c-toolbar__cta-btn">
-        <span>Descargar App</span>
-        <mat-icon class="c-toolbar__cta-icon">arrow_forward</mat-icon>
+      <!-- Botón CTA Desktop a Google Play Store -->
+      <a
+        href="https://play.google.com/store/apps/details?id=ar.com.wolftei.triburunner"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="c-toolbar__cta-btn"
+      >
+        <span>Google Play</span>
+        <mat-icon class="c-toolbar__cta-icon">shop</mat-icon>
       </a>
 
       <!-- Botón Hamburguesa Móvil -->
@@ -74,13 +79,13 @@
     <div class="c-toolbar__mobile-menu">
       <ul class="c-toolbar__mobile-nav-list">
         <li>
-          <a routerLink="/home" fragment="features" class="c-toolbar__mobile-nav-link" (click)="closeMobileMenu()">Funciones</a>
+          <a href="/home#features" class="c-toolbar__mobile-nav-link" (click)="scrollToSection('features', $event)">Funciones</a>
         </li>
         <li>
-          <a routerLink="/home" fragment="metrics" class="c-toolbar__mobile-nav-link" (click)="closeMobileMenu()">Métricas & Zonas</a>
+          <a href="/home#metrics" class="c-toolbar__mobile-nav-link" (click)="scrollToSection('metrics', $event)">Métricas & Zonas</a>
         </li>
         <li>
-          <a routerLink="/home" fragment="coaches" class="c-toolbar__mobile-nav-link" (click)="closeMobileMenu()">Para Coaches</a>
+          <a href="/home#tribus" class="c-toolbar__mobile-nav-link" (click)="scrollToSection('tribus', $event)">Tribus</a>
         </li>
         <li>
           <a routerLink="/equipamiento" class="c-toolbar__mobile-nav-link" (click)="closeMobileMenu()">
@@ -93,9 +98,15 @@
           </a>
         </li>
         <li class="c-toolbar__mobile-cta-wrapper">
-          <a routerLink="/home" fragment="download" class="c-toolbar__cta-btn c-toolbar__cta-btn--full" (click)="closeMobileMenu()">
-            <span>Descargar App</span>
-            <mat-icon class="c-toolbar__cta-icon">arrow_forward</mat-icon>
+          <a
+            href="https://play.google.com/store/apps/details?id=ar.com.wolftei.triburunner"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="c-toolbar__cta-btn c-toolbar__cta-btn--full"
+            (click)="closeMobileMenu()"
+          >
+            <span>Descargar en Google Play</span>
+            <mat-icon class="c-toolbar__cta-icon">shop</mat-icon>
           </a>
         </li>
       </ul>

@@ -413,19 +413,17 @@
                   </div>
 
                   <div class="c-form-group">
-                    <label class="c-form-label" for="promo-expires">Vigencia en Días</label>
+                    <label class="c-form-label" for="promo-expires">Fecha Límite de Canje (Opcional)</label>
                     <div class="c-input-wrapper">
                       <mat-icon class="c-input-icon">event</mat-icon>
                       <input
                         id="promo-expires"
-                        type="number"
-                        min="1"
-                        max="365"
+                        type="date"
                         class="c-input"
-                        [ngModel]="newPromoExpiresDays()"
-                        (ngModelChange)="newPromoExpiresDays.set($event)"
-                        name="expiresDays"
-                        required
+                        [ngModel]="newPromoExpiresDate()"
+                        (ngModelChange)="newPromoExpiresDate.set($event)"
+                        name="expiresDate"
+                        placeholder="Sin fecha límite (Nunca vence)"
                       />
                     </div>
                   </div>
