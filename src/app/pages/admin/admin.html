@@ -1,0 +1,1139 @@
+<app-toolbar></app-toolbar>
+
+<!-- Notificación Flotante Toast -->
+@if (toastMessage()) {
+  <div class="c-admin-toast c-admin-toast--{{ toastType() }}" role="status">
+    <mat-icon class="c-admin-toast__icon">
+      @if (toastType() === 'success') { check_circle }
+      @else if (toastType() === 'error') { error }
+      @else { info }
+    </mat-icon>
+    <span class="c-admin-toast__text">{{ toastMessage() }}</span>
+  </div>
+}
+
+<main class="c-admin-page">
+  <div class="c-admin-page__glow c-admin-page__glow--top" aria-hidden="true"></div>
+  <div class="c-admin-page__glow c-admin-page__glow--bottom" aria-hidden="true"></div>
+
+  <div class="container">
+    <!-- ==================================================================== -->
+    <!-- ESTADO 1: ACCESO NO AUTENTICADO / LOGIN DE ADMINISTRACIÓN -->
+    <!-- ==================================================================== -->
+    @if (!isStaffOrFounder()) {
+      <section class="c-admin-auth">
+        <div class="c-admin-auth__card">
+          <div class="c-admin-auth__header">
+            <div class="c-admin-auth__badge badge-pill">
+              <mat-icon>admin_panel_settings</mat-icon>
+              <span>Acceso Restringido</span>
+            </div>
+            <h1 class="c-admin-auth__title">
+              Panel de Administración <span class="text-gradient">TribuRunner</span>
+            </h1>
+            <p class="c-admin-auth__subtitle">
+              Ingresá con tu cuenta autorizada de Fundador o Staff Moderador para gestionar la base de datos de Firestore en tiempo real.
+            </p>
+          </div>
+
+          @if (loginError()) {
+            <div class="c-admin-auth__error" role="alert">
+              <mat-icon>warning</mat-icon>
+              <span>{{ loginError() }}</span>
+            </div>
+          }
+
+          <div class="c-admin-auth__actions">
+            <button
+              type="button"
+              class="c-btn c-btn--primary c-btn--full c-btn--lg"
+              (click)="handleGoogleLogin()"
+              [disabled]="isLoggingIn()"
+            >
+              <mat-icon class="c-btn__icon">account_circle</mat-icon>
+              <span>{{ isLoggingIn() ? 'Conectando con Google...' : 'Ingresar con Cuenta de Google 🚀' }}</span>
+            </button>
+          </div>
+
+          <div class="c-admin-auth__footer">
+            <mat-icon class="c-admin-auth__shield-icon">security</mat-icon>
+            <span>Autenticación protegida mediante Firebase Auth & RBAC Security Rules v2.</span>
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- ==================================================================== -->
+    <!-- ESTADO 2: DASHBOARD DE CONTROL AUTENTICADO (FOUNDER / STAFF) -->
+    <!-- ==================================================================== -->
+    @if (isStaffOrFounder()) {
+      <div class="c-admin-dashboard">
+        <!-- Top Bar de Estado y Perfil Staff -->
+        <header class="c-admin-topbar">
+          <div class="c-admin-topbar__info">
+            <div class="c-admin-topbar__user">
+              <div class="c-admin-topbar__avatar">
+                @if (currentUser()?.photoURL) {
+                  <img [src]="currentUser()?.photoURL" [alt]="currentUser()?.displayName || 'Avatar'" />
+                } @else {
+                  <mat-icon>person</mat-icon>
+                }
+              </div>
+              <div>
+                <div class="c-admin-topbar__name-row">
+                  <h2 class="c-admin-topbar__name">
+                    {{ currentUser()?.displayName || currentUser()?.email || 'Staff Autorizado' }}
+                  </h2>
+                  <span
+                    class="c-role-badge"
+                    [class.c-role-badge--founder]="isFounder()"
+                    [class.c-role-badge--moderator]="!isFounder()"
+                  >
+                    {{ isFounder() ? 'ROOT FOUNDER 👑' : 'STAFF MODERADOR 🛡️' }}
+                  </span>
+                </div>
+                <div class="c-admin-topbar__status">
+                  <span class="c-status-dot c-status-dot--live"></span>
+                  <span>Conectado en vivo a Firestore (<code>tribu-runner</code>)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="c-admin-topbar__actions">
+            <button
+              type="button"
+              class="c-btn-icon"
+              title="Refrescar listeners"
+              (click)="adminService.startRealtimeListeners(); showToast('Datos sincronizados en tiempo real', 'info')"
+            >
+              <mat-icon>sync</mat-icon>
+            </button>
+            <button
+              type="button"
+              class="c-btn-danger-outline"
+              (click)="handleLogout()"
+            >
+              <mat-icon>logout</mat-icon>
+              <span>Cerrar Sesión</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Navegación de Pestañas Principales (Selector según Rol) -->
+        <nav class="c-admin-tabs" aria-label="Secciones de administración">
+          @if (isFounder()) {
+            <button
+              type="button"
+              class="c-admin-tab"
+              [class.c-admin-tab--active]="selectedTab() === 0"
+              (click)="selectedTab.set(0)"
+            >
+              <mat-icon class="c-admin-tab__icon">shield</mat-icon>
+              <span>Staff & Roles</span>
+              <span class="c-admin-tab__badge">{{ staffModerators().length }}</span>
+            </button>
+
+            <button
+              type="button"
+              class="c-admin-tab"
+              [class.c-admin-tab--active]="selectedTab() === 1"
+              (click)="selectedTab.set(1)"
+            >
+              <mat-icon class="c-admin-tab__icon">card_giftcard</mat-icon>
+              <span>Generar Promo</span>
+            </button>
+
+            <button
+              type="button"
+              class="c-admin-tab"
+              [class.c-admin-tab--active]="selectedTab() === 2"
+              (click)="selectedTab.set(2)"
+            >
+              <mat-icon class="c-admin-tab__icon">confirmation_number</mat-icon>
+              <span>Promos Activas</span>
+              <span class="c-admin-tab__badge">{{ promoCodes().length }}</span>
+            </button>
+          }
+
+          <button
+            type="button"
+            class="c-admin-tab"
+            [class.c-admin-tab--active]="selectedTab() === 3"
+            (click)="selectedTab.set(3)"
+          >
+            <mat-icon class="c-admin-tab__icon">flag</mat-icon>
+            <span>Eventos & Carreras</span>
+            <span class="c-admin-tab__badge">{{ officialEvents().length }}</span>
+          </button>
+
+          <button
+            type="button"
+            class="c-admin-tab"
+            [class.c-admin-tab--active]="selectedTab() === 4"
+            (click)="selectedTab.set(4)"
+          >
+            <mat-icon class="c-admin-tab__icon">mark_email_unread</mat-icon>
+            <span>Buzón Sugerencias</span>
+            @if (pendingSuggestionsCount() > 0) {
+              <span class="c-admin-tab__badge c-admin-tab__badge--alert">{{ pendingSuggestionsCount() }}</span>
+            }
+          </button>
+
+          <button
+            type="button"
+            class="c-admin-tab"
+            [class.c-admin-tab--active]="selectedTab() === 5"
+            (click)="selectedTab.set(5)"
+          >
+            <mat-icon class="c-admin-tab__icon">storefront</mat-icon>
+            <span>Tienda & Afiliados</span>
+            <span class="c-admin-tab__badge">{{ affiliateProducts().length }}</span>
+          </button>
+
+          <button
+            type="button"
+            class="c-admin-tab"
+            [class.c-admin-tab--active]="selectedTab() === 6"
+            (click)="selectedTab.set(6)"
+          >
+            <mat-icon class="c-admin-tab__icon">report</mat-icon>
+            <span>Denuncias UGC</span>
+            @if (pendingReportsCount() > 0) {
+              <span class="c-admin-tab__badge c-admin-tab__badge--alert">{{ pendingReportsCount() }}</span>
+            }
+          </button>
+        </nav>
+
+        <!-- ================================================================ -->
+        <!-- PESTAÑA 0: GESTIÓN DE STAFF Y ROLES (SOLO FOUNDER) -->
+        <!-- ================================================================ -->
+        @if (isFounder() && selectedTab() === 0) {
+          <section class="c-admin-section">
+            <div class="c-admin-section__header">
+              <div>
+                <h3 class="c-admin-section__title">🛡️ Moderadores y Equipo de Staff</h3>
+                <p class="c-admin-section__desc">
+                  Designá o revocá permisos de moderación a atletas registrados en la plataforma.
+                </p>
+              </div>
+            </div>
+
+            <!-- Lista de Moderadores Actuales -->
+            <div class="c-staff-grid">
+              @for (staff of staffModerators(); track staff.uid) {
+                <div class="c-card c-staff-card">
+                  <div class="c-staff-card__info">
+                    <div
+                      class="c-staff-card__avatar"
+                      [style.color]="staff.role === 'FOUNDER' ? '#ffd700' : '#00e5ff'"
+                      [style.borderColor]="staff.role === 'FOUNDER' ? '#ffd700' : 'rgba(0, 229, 255, 0.4)'"
+                    >
+                      <mat-icon>{{ staff.role === 'FOUNDER' ? 'workspace_premium' : 'security' }}</mat-icon>
+                    </div>
+                    <div>
+                      <h4 class="c-staff-card__name">{{ staff.displayName }}</h4>
+                      <p class="c-staff-card__email">{{ staff.email }}</p>
+                      <span
+                        class="c-role-tag"
+                        [class.c-role-tag--founder]="staff.role === 'FOUNDER'"
+                        [class.c-role-tag--mod]="staff.role !== 'FOUNDER'"
+                      >
+                        {{ staff.role === 'FOUNDER' ? '👑 FUNDADOR ROOT' : 'STAFF MODERADOR' }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="c-staff-card__actions">
+                    @if (staff.role !== 'FOUNDER') {
+                      <button
+                        type="button"
+                        class="c-btn-danger-sm"
+                        (click)="onRevokeModerator(staff.uid, staff.displayName || staff.email)"
+                      >
+                        <mat-icon>person_remove</mat-icon>
+                        <span>Revocar</span>
+                      </button>
+                    } @else {
+                      <span class="c-badge-chip" style="color: #ffd700; border-color: rgba(255, 215, 0, 0.4);">
+                        Permanente
+                      </span>
+                    }
+                  </div>
+                </div>
+              } @empty {
+                <div class="c-empty-state">
+                  <mat-icon class="c-empty-state__icon">verified_user</mat-icon>
+                  <p>No hay moderadores secundarios designados en <code>/admins</code>.</p>
+                </div>
+              }
+            </div>
+
+            <!-- Buscador de Atletas PRO para Promoción -->
+            <div class="c-card c-admin-box">
+              <h4 class="c-admin-box__title">🔍 Buscar Atletas PRO en Firestore para Asignar Moderador</h4>
+              <p class="c-admin-section__desc" style="margin-bottom: 14px;">
+                Solo se listan atletas con suscripción PRO activa. Tu propia cuenta y el staff ya designado se omiten automáticamente.
+              </p>
+              <div class="c-search-bar">
+                <div class="c-input-wrapper">
+                  <mat-icon class="c-input-icon">search</mat-icon>
+                  <input
+                    type="text"
+                    class="c-input"
+                    placeholder="Buscar por nombre o correo de atleta PRO..."
+                    [ngModel]="userSearchQuery()"
+                    (ngModelChange)="userSearchQuery.set($event); onSearchUsers()"
+                  />
+                </div>
+                <button type="button" class="c-btn c-btn--primary" (click)="onSearchUsers()">
+                  <span>Buscar</span>
+                </button>
+              </div>
+
+              <div class="c-user-search-results">
+                @for (athlete of searchedAthletes(); track athlete.uid) {
+                  <div class="c-user-row">
+                    <div class="c-user-row__info">
+                      <mat-icon class="c-user-row__icon" style="color: #ffd700;">stars</mat-icon>
+                      <div>
+                        <strong>{{ athlete.displayName }}</strong>
+                        <span class="c-badge-pill c-badge-pill--sm" style="margin-left: 6px; padding: 2px 8px; font-size: 0.7rem;">PRO ⚡</span>
+                        <span class="c-user-row__email">{{ athlete.email }}</span>
+                        @if (athlete.teamName) {
+                          <span class="c-user-row__team">Tribu: {{ athlete.teamName }}</span>
+                        }
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      class="c-btn c-btn--secondary c-btn--sm"
+                      (click)="onAssignModerator(athlete)"
+                    >
+                      <mat-icon>add_moderator</mat-icon>
+                      <span>Hacer Moderador</span>
+                    </button>
+                  </div>
+                } @empty {
+                  <div class="c-empty-state" style="padding: 24px;">
+                    <mat-icon class="c-empty-state__icon">person_search</mat-icon>
+                    <p>No se encontraron otros atletas con membresía PRO activa para promover.</p>
+                  </div>
+                }
+              </div>
+            </div>
+          </section>
+        }
+
+        <!-- ================================================================ -->
+        <!-- PESTAÑA 1: CREAR CÓDIGO PROMOCIONAL (SOLO FOUNDER) -->
+        <!-- ================================================================ -->
+        @if (isFounder() && selectedTab() === 1) {
+          <section class="c-admin-section">
+            <div class="c-admin-section__header">
+              <div>
+                <h3 class="c-admin-section__title">🎁 Generador de Códigos Promocionales VIP</h3>
+                <p class="c-admin-section__desc">
+                  Generá cupones de suscripción PRO para atletas, alianzas con coaches o eventos especiales.
+                </p>
+              </div>
+            </div>
+
+            <div class="c-card c-admin-box">
+              <form class="c-admin-form" (submit)="$event.preventDefault(); onCreatePromoCode()">
+                <div class="c-form-grid">
+                  <div class="c-form-group">
+                    <label class="c-form-label" for="promo-code">Código (Alfanumérico)</label>
+                    <div class="c-input-wrapper">
+                      <mat-icon class="c-input-icon">label</mat-icon>
+                      <input
+                        id="promo-code"
+                        type="text"
+                        class="c-input c-input--uppercase"
+                        placeholder="TRIBU_PRO_2026"
+                        [ngModel]="newPromoCode()"
+                        (ngModelChange)="newPromoCode.set($event)"
+                        name="code"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="c-form-group">
+                    <label class="c-form-label" for="promo-duration">Duración de la Membresía</label>
+                    <div class="c-input-wrapper">
+                      <mat-icon class="c-input-icon">schedule</mat-icon>
+                      <select
+                        id="promo-duration"
+                        class="c-input c-select"
+                        [ngModel]="newPromoDuration()"
+                        (ngModelChange)="newPromoDuration.set($event)"
+                        name="duration"
+                      >
+                        <option value="LIFETIME">Vitalicio / Lifetime 👑</option>
+                        <option value="DAYS_30">30 Días (1 Mes PRO) ⚡</option>
+                        <option value="DAYS_365">1 Año Completo (365 Días) 🏆</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="c-form-group">
+                    <label class="c-form-label" for="promo-eligibility">Elegibilidad</label>
+                    <div class="c-input-wrapper">
+                      <mat-icon class="c-input-icon">groups</mat-icon>
+                      <select
+                        id="promo-eligibility"
+                        class="c-input c-select"
+                        [ngModel]="newPromoEligibility()"
+                        (ngModelChange)="newPromoEligibility.set($event)"
+                        name="eligibility"
+                      >
+                        <option value="ANY_USER">Cualquier Atleta (Todos)</option>
+                        <option value="NEW_USERS_ONLY">Solo Nuevos Registros (&lt; 72 hs)</option>
+                        <option value="FREE_USERS_ONLY">Solo Atletas Free (Sin PRO)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="c-form-group">
+                    <label class="c-form-label" for="promo-max-uses">Límite de Canjes (Usos)</label>
+                    <div class="c-input-wrapper">
+                      <mat-icon class="c-input-icon">pin</mat-icon>
+                      <input
+                        id="promo-max-uses"
+                        type="number"
+                        min="1"
+                        max="10000"
+                        class="c-input"
+                        [ngModel]="newPromoMaxUses()"
+                        (ngModelChange)="newPromoMaxUses.set($event)"
+                        name="maxUses"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="c-form-group">
+                    <label class="c-form-label" for="promo-expires">Vigencia en Días</label>
+                    <div class="c-input-wrapper">
+                      <mat-icon class="c-input-icon">event</mat-icon>
+                      <input
+                        id="promo-expires"
+                        type="number"
+                        min="1"
+                        max="365"
+                        class="c-input"
+                        [ngModel]="newPromoExpiresDays()"
+                        (ngModelChange)="newPromoExpiresDays.set($event)"
+                        name="expiresDays"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="c-form-group c-form-group--full">
+                    <label class="c-form-label" for="promo-desc">Descripción / Motivo</label>
+                    <div class="c-input-wrapper">
+                      <mat-icon class="c-input-icon">description</mat-icon>
+                      <input
+                        id="promo-desc"
+                        type="text"
+                        class="c-input"
+                        placeholder="ej: Descuento oficial Maratón Buenos Aires 2026"
+                        [ngModel]="newPromoDescription()"
+                        (ngModelChange)="newPromoDescription.set($event)"
+                        name="description"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="c-admin-form__actions">
+                  <button type="submit" class="c-btn c-btn--primary">
+                    <mat-icon class="c-btn__icon">add_task</mat-icon>
+                    <span>Guardar y Publicar en Firestore</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </section>
+        }
+
+        <!-- ================================================================ -->
+        <!-- PESTAÑA 2: CÓDIGOS PROMOCIONALES ACTIVOS -->
+        <!-- ================================================================ -->
+        @if (isFounder() && selectedTab() === 2) {
+          <section class="c-admin-section">
+            <div class="c-admin-section__header">
+              <div>
+                <h3 class="c-admin-section__title">📋 Códigos Promocionales Activos</h3>
+                <p class="c-admin-section__desc">
+                  Monitoreo en vivo de cupones, porcentaje de canje y borrado directo.
+                </p>
+              </div>
+              <button
+                type="button"
+                class="c-btn c-btn--secondary c-btn--sm"
+                (click)="selectedTab.set(1)"
+              >
+                <mat-icon>add</mat-icon>
+                <span>Nuevo Código</span>
+              </button>
+            </div>
+
+            <div class="c-promo-grid">
+              @for (promo of promoCodes(); track promo.code) {
+                <div class="c-card c-promo-card">
+                  <div class="c-promo-card__header">
+                    <div class="c-promo-card__code" (click)="copyToClipboard(promo.code)" title="Clic para copiar">
+                      <span>{{ promo.code }}</span>
+                      <mat-icon class="c-promo-card__copy-icon">content_copy</mat-icon>
+                    </div>
+                    <span class="c-badge-chip">
+                      {{ promo.durationType === 'LIFETIME' ? '👑 VITALICIO' : (promo.durationType === 'DAYS_30' ? '⚡ 30 DÍAS' : '🏆 365 DÍAS') }}
+                    </span>
+                  </div>
+
+                  <div class="c-promo-card__body">
+                    <p class="c-promo-card__desc">{{ promo.description || 'Sin descripción' }}</p>
+                    <div class="c-promo-card__meta">
+                      <div>
+                        <strong>Usos:</strong> {{ promo.usedCount }} / {{ promo.maxUses }}
+                      </div>
+                      <div>
+                        <strong>Elegibilidad:</strong>
+                        {{ promo.eligibilityType === 'ANY_USER' ? 'Cualquier Atleta' : (promo.eligibilityType === 'NEW_USERS_ONLY' ? 'Solo Nuevos' : 'Solo Free') }}
+                      </div>
+                      <div>
+                        <strong>Caducidad:</strong>
+                        <span [style.color]="promo.expiresAt ? '#00e5ff' : 'var(--tribu-text-muted)'">
+                          {{ formatPromoExpiry(promo.expiresAt) }}
+                        </span>
+                      </div>
+                      <div>
+                        <strong>Creado:</strong>
+                        <span>{{ formatPromoCreation(promo.createdAt) }}</span>
+                      </div>
+                    </div>
+                    <div class="c-progress-bar">
+                      <div
+                        class="c-progress-bar__fill"
+                        [style.width.%]="promo.maxUses > 0 ? (promo.usedCount / promo.maxUses) * 100 : 0"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div class="c-promo-card__actions">
+                    <button
+                      type="button"
+                      class="c-btn-danger-sm"
+                      (click)="onDeletePromoCode(promo.code)"
+                      title="Eliminar código"
+                    >
+                      <mat-icon>delete</mat-icon>
+                      <span>Eliminar</span>
+                    </button>
+
+                    <div style="display: flex; gap: 8px;">
+                      <button
+                        type="button"
+                        class="c-btn-action-sm"
+                        (click)="copyToClipboard(promo.code)"
+                        title="Copiar código"
+                      >
+                        <mat-icon>content_copy</mat-icon>
+                        <span>Copiar</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        class="c-btn-whatsapp-sm"
+                        (click)="shareOnWhatsApp(promo.code)"
+                        title="Compartir por WhatsApp con enlace de descarga"
+                      >
+                        <mat-icon>share</mat-icon>
+                        <span>WhatsApp</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              } @empty {
+                <div class="c-empty-state">
+                  <mat-icon class="c-empty-state__icon">card_giftcard</mat-icon>
+                  <p>No hay códigos promocionales cargados actualmente en <code>/promo_codes</code>.</p>
+                </div>
+              }
+            </div>
+          </section>
+        }
+
+        <!-- ================================================================ -->
+        <!-- PESTAÑA 3: EVENTOS & CARRERAS OFICIALES -->
+        <!-- ================================================================ -->
+        @if (selectedTab() === 3) {
+          <section class="c-admin-section">
+            <div class="c-admin-section__header">
+              <div>
+                <h3 class="c-admin-section__title">🏁 Calendario de Carreras y Eventos Oficiales</h3>
+                <p class="c-admin-section__desc">
+                  Publicá competencias que se sincronizarán en la app Android y la web en tiempo real.
+                </p>
+              </div>
+              <button
+                type="button"
+                class="c-btn c-btn--primary c-btn--sm"
+                (click)="isCreatingEvent.set(!isCreatingEvent())"
+              >
+                <mat-icon>{{ isCreatingEvent() ? 'close' : 'add' }}</mat-icon>
+                <span>{{ isCreatingEvent() ? 'Cancelar' : 'Publicar Carrera' }}</span>
+              </button>
+            </div>
+
+            @if (isCreatingEvent()) {
+              <div class="c-card c-admin-box c-slide-down">
+                <h4 class="c-admin-box__title">➕ Publicar Nueva Carrera Oficial</h4>
+                <form class="c-admin-form" (submit)="$event.preventDefault(); onSaveOfficialEvent()">
+                  <div class="c-form-grid">
+                    <div class="c-form-group">
+                      <label class="c-form-label" for="event-title">Nombre de la Carrera</label>
+                      <input
+                        id="event-title"
+                        type="text"
+                        class="c-input"
+                        placeholder="ej: Maratón de Buenos Aires 42K"
+                        [ngModel]="eventTitle()"
+                        (ngModelChange)="eventTitle.set($event)"
+                        name="title"
+                        required
+                      />
+                    </div>
+
+                    <div class="c-form-group">
+                      <label class="c-form-label" for="event-category">Categoría</label>
+                      <select
+                        id="event-category"
+                        class="c-input c-select"
+                        [ngModel]="eventCategory()"
+                        (ngModelChange)="eventCategory.set($event)"
+                        name="category"
+                      >
+                        <option value="Calle">Calle / Asfalto</option>
+                        <option value="Trail / Montaña">Trail / Montaña ⛰️</option>
+                        <option value="Maratón (42K)">Maratón (42K) 🏅</option>
+                        <option value="Media Maratón (21K)">Media Maratón (21K) 🥈</option>
+                        <option value="10K / 5K">10K / 5K Velocidad ⚡</option>
+                      </select>
+                    </div>
+
+                    <div class="c-form-group">
+                      <label class="c-form-label" for="event-date">Fecha del Evento</label>
+                      <input
+                        id="event-date"
+                        type="text"
+                        class="c-input"
+                        placeholder="ej: 18 Octubre 2026"
+                        [ngModel]="eventDateStr()"
+                        (ngModelChange)="eventDateStr.set($event)"
+                        name="dateStr"
+                        required
+                      />
+                    </div>
+
+                    <div class="c-form-group">
+                      <label class="c-form-label" for="event-location">Ubicación</label>
+                      <input
+                        id="event-location"
+                        type="text"
+                        class="c-input"
+                        placeholder="ej: Palermo, Buenos Aires"
+                        [ngModel]="eventLocation()"
+                        (ngModelChange)="eventLocation.set($event)"
+                        name="location"
+                        required
+                      />
+                    </div>
+
+                    <div class="c-form-group">
+                      <label class="c-form-label" for="event-link">Link de Inscripción Oficial</label>
+                      <input
+                        id="event-link"
+                        type="url"
+                        class="c-input"
+                        placeholder="https://..."
+                        [ngModel]="eventRegistrationUrl()"
+                        (ngModelChange)="eventRegistrationUrl.set($event)"
+                        name="link"
+                      />
+                    </div>
+
+                    <div class="c-form-group">
+                      <label class="c-form-label" for="event-organizer">Organizador / Running Team</label>
+                      <input
+                        id="event-organizer"
+                        type="text"
+                        class="c-input"
+                        placeholder="ej: Club de Corredores"
+                        [ngModel]="eventOrganizer()"
+                        (ngModelChange)="eventOrganizer.set($event)"
+                        name="organizer"
+                      />
+                    </div>
+
+                    <div class="c-form-group c-form-group--full">
+                      <label class="c-form-label" for="event-desc">Detalles / Altimetría / Premiación</label>
+                      <textarea
+                        id="event-desc"
+                        class="c-input c-textarea"
+                        rows="3"
+                        placeholder="Información relevante para los atletas..."
+                        [ngModel]="eventDescription()"
+                        (ngModelChange)="eventDescription.set($event)"
+                        name="desc"
+                      ></textarea>
+                    </div>
+                  </div>
+
+                  <div class="c-admin-form__actions">
+                    <button type="submit" class="c-btn c-btn--primary">
+                      <mat-icon>publish</mat-icon>
+                      <span>Publicar Carrera</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            }
+
+            <div class="c-events-grid">
+              @for (ev of officialEvents(); track ev.id) {
+                <div class="c-card c-event-card">
+                  <div class="c-event-card__header">
+                    <span class="c-badge-pill c-badge-pill--accent">{{ ev.category }}</span>
+                    <span class="c-event-card__date">{{ ev.dateStr }}</span>
+                  </div>
+                  <h4 class="c-event-card__title">{{ ev.title }}</h4>
+                  <p class="c-event-card__location">
+                    <mat-icon class="c-event-card__icon">place</mat-icon>
+                    <span>{{ ev.location }}</span>
+                  </p>
+                  <p class="c-event-card__desc">{{ ev.description }}</p>
+
+                  <div class="c-event-card__footer">
+                    @if (ev.registrationUrl) {
+                      <a [href]="ev.registrationUrl" target="_blank" rel="noopener" class="c-event-card__link">
+                        <span>Inscripción</span>
+                        <mat-icon>open_in_new</mat-icon>
+                      </a>
+                    }
+                    <button
+                      type="button"
+                      class="c-btn-danger-sm"
+                      (click)="onDeleteEvent(ev.id, ev.title)"
+                    >
+                      <mat-icon>delete</mat-icon>
+                      <span>Eliminar</span>
+                    </button>
+                  </div>
+                </div>
+              } @empty {
+                <div class="c-empty-state">
+                  <mat-icon class="c-empty-state__icon">flag</mat-icon>
+                  <p>No hay carreras oficiales registradas en <code>/official_events</code>.</p>
+                </div>
+              }
+            </div>
+          </section>
+        }
+
+        <!-- ================================================================ -->
+        <!-- PESTAÑA 4: BUZÓN DE SUGERENCIAS DE LA COMUNIDAD -->
+        <!-- ================================================================ -->
+        @if (selectedTab() === 4) {
+          <section class="c-admin-section">
+            <div class="c-admin-section__header">
+              <div>
+                <h3 class="c-admin-section__title">📬 Buzón de Sugerencias Comunitarias</h3>
+                <p class="c-admin-section__desc">
+                  Revisá las carreras propuestas por los corredores y aprobalas como oficiales en 1 clic.
+                </p>
+              </div>
+            </div>
+
+            <div class="c-suggestions-grid">
+              @for (sug of eventSuggestions(); track sug.id) {
+                <div class="c-card c-suggestion-card" [class.c-suggestion-card--approved]="sug.status === 'APPROVED'">
+                  <div class="c-suggestion-card__header">
+                    <span class="c-badge-pill">{{ sug.category }}</span>
+                    <span
+                      class="c-status-chip"
+                      [class.c-status-chip--approved]="sug.status === 'APPROVED'"
+                    >
+                      {{ sug.status === 'APPROVED' ? 'APROBADA ✅' : 'PENDIENTE ⏳' }}
+                    </span>
+                  </div>
+
+                  <h4 class="c-suggestion-card__title">{{ sug.eventName }}</h4>
+                  <p class="c-suggestion-card__meta">
+                    <strong>Fecha:</strong> {{ sug.dateStr }} • <strong>Lugar:</strong> {{ sug.location }}
+                  </p>
+                  @if (sug.linkOrContact) {
+                    <p class="c-suggestion-card__meta">
+                      <strong>Contacto / Link:</strong>
+                      <a [href]="sug.linkOrContact" target="_blank" rel="noopener">{{ sug.linkOrContact }}</a>
+                    </p>
+                  }
+                  <p class="c-suggestion-card__notes">"{{ sug.notes }}"</p>
+                  <span class="c-suggestion-card__author">Sugerido por: {{ sug.submittedByName || 'Atleta Anónimo' }}</span>
+
+                  <div class="c-suggestion-card__actions">
+                    @if (sug.status !== 'APPROVED') {
+                      <button
+                        type="button"
+                        class="c-btn c-btn--primary c-btn--sm"
+                        (click)="onApproveSuggestion(sug)"
+                      >
+                        <mat-icon>check_circle</mat-icon>
+                        <span>Aprobar como Oficial</span>
+                      </button>
+                    }
+                    <button
+                      type="button"
+                      class="c-btn-danger-sm"
+                      (click)="onDeleteSuggestion(sug.id)"
+                    >
+                      <mat-icon>delete</mat-icon>
+                      <span>Descartar</span>
+                    </button>
+                  </div>
+                </div>
+              } @empty {
+                <div class="c-empty-state">
+                  <mat-icon class="c-empty-state__icon">mark_email_read</mat-icon>
+                  <p>Buzón limpio: No hay sugerencias pendientes en <code>/event_suggestions</code>.</p>
+                </div>
+              }
+            </div>
+          </section>
+        }
+
+        <!-- ================================================================ -->
+        <!-- PESTAÑA 5: TIENDA & AFILIADOS (CREACIÓN AUTOMÁTICA POR LINK / SCRAPING) -->
+        <!-- ================================================================ -->
+        @if (selectedTab() === 5) {
+          <section class="c-admin-section">
+            <div class="c-admin-section__header">
+              <div>
+                <h3 class="c-admin-section__title">🛍️ Catálogo de Tienda & Productos Afiliados</h3>
+                <p class="c-admin-section__desc">
+                  Pegá un enlace de Mercado Libre, Amazon o tienda oficial para extraer la foto, título y precio automáticamente.
+                </p>
+              </div>
+              <button
+                type="button"
+                class="c-btn c-btn--primary c-btn--sm"
+                (click)="isCreatingProduct.set(!isCreatingProduct())"
+              >
+                <mat-icon>{{ isCreatingProduct() ? 'close' : 'bolt' }}</mat-icon>
+                <span>{{ isCreatingProduct() ? 'Cerrar Generador' : 'Crear Tarjeta con Link' }}</span>
+              </button>
+            </div>
+
+            <!-- Generador Inteligente de Tarjeta a partir de Link -->
+            @if (isCreatingProduct()) {
+              <div class="c-card c-admin-box c-slide-down">
+                <div class="c-scraper-header">
+                  <div class="badge-pill">
+                    <mat-icon>auto_awesome</mat-icon>
+                    <span>Extracción Inteligente Open Graph</span>
+                  </div>
+                  <h4 class="c-admin-box__title">🚀 Generar Tarjeta de Afiliado desde Enlace</h4>
+                </div>
+
+                <!-- Input Principal de Enlace -->
+                <div class="c-link-input-group">
+                  <div class="c-input-wrapper c-link-input-group__input">
+                    <mat-icon class="c-input-icon">link</mat-icon>
+                    <input
+                      type="url"
+                      class="c-input"
+                      placeholder="Pegá aquí el link (ej: https://meli.la/25fad24 o link de Mercado Libre)..."
+                      [ngModel]="productAffiliateUrl()"
+                      (ngModelChange)="productAffiliateUrl.set($event)"
+                      (keyup.enter)="analyzeLink()"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    class="c-btn c-btn--secondary"
+                    (click)="pasteLinkFromClipboard()"
+                    title="Pegar enlace del portapapeles"
+                  >
+                    <mat-icon>content_paste</mat-icon>
+                    <span>Pegar</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="c-btn c-btn--primary"
+                    (click)="analyzeLink()"
+                    [disabled]="isAnalyzingLink() || !productAffiliateUrl()"
+                  >
+                    <mat-icon class="c-btn__icon">{{ isAnalyzingLink() ? 'hourglass_top' : 'auto_fix_high' }}</mat-icon>
+                    <span>{{ isAnalyzingLink() ? 'Analizando link...' : 'Analizar Enlace' }}</span>
+                  </button>
+                </div>
+
+                @if (scrapingError()) {
+                  <div class="c-admin-auth__error" role="alert" style="margin-top: 14px;">
+                    <mat-icon>info</mat-icon>
+                    <span>{{ scrapingError() }}</span>
+                  </div>
+                }
+
+                <!-- Formulario de Edición y Live Preview -->
+                <div class="c-scraper-content" [class.c-scraper-content--visible]="hasScrapedOnce() || productTitle()">
+                  <div class="c-scraper-columns">
+                    <!-- Columna 1: Campos Editables -->
+                    <div class="c-scraper-form">
+                      <div class="c-form-group">
+                        <label class="c-form-label" for="prod-title">Título del Producto</label>
+                        <input
+                          id="prod-title"
+                          type="text"
+                          class="c-input"
+                          placeholder="Título del producto..."
+                          [ngModel]="productTitle()"
+                          (ngModelChange)="productTitle.set($event)"
+                        />
+                      </div>
+
+                      <div class="c-form-grid">
+                        <div class="c-form-group">
+                          <label class="c-form-label" for="prod-price">Precio Estimado</label>
+                          <input
+                            id="prod-price"
+                            type="text"
+                            class="c-input"
+                            placeholder="$ 129.999"
+                            [ngModel]="productPriceEstimate()"
+                            (ngModelChange)="productPriceEstimate.set($event)"
+                          />
+                        </div>
+
+                        <div class="c-form-group">
+                          <label class="c-form-label" for="prod-brand">Tienda / Marca</label>
+                          <input
+                            id="prod-brand"
+                            type="text"
+                            class="c-input"
+                            placeholder="Mercado Libre / Meli"
+                            [ngModel]="productBrand()"
+                            (ngModelChange)="productBrand.set($event)"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="c-form-group">
+                        <label class="c-form-label" for="prod-badge">Etiqueta Badge</label>
+                        <input
+                          id="prod-badge"
+                          type="text"
+                          class="c-input"
+                          placeholder="🔥 Recomendado"
+                          [ngModel]="productBadgeTag()"
+                          (ngModelChange)="productBadgeTag.set($event)"
+                        />
+                      </div>
+
+                      <div class="c-form-group">
+                        <label class="c-form-label">Categoría Deportiva</label>
+                        <div class="c-chips-selector">
+                          @for (cat of availableCategories; track cat.key) {
+                            <button
+                              type="button"
+                              class="c-chip-btn"
+                              [class.c-chip-btn--active]="productCategory() === cat.key"
+                              (click)="productCategory.set(cat.key)"
+                            >
+                              {{ cat.label }}
+                            </button>
+                          }
+                        </div>
+                      </div>
+
+                      <div class="c-form-group">
+                        <label class="c-form-label" for="prod-img-url">URL de Imagen del Producto</label>
+                        <input
+                          id="prod-img-url"
+                          type="url"
+                          class="c-input"
+                          placeholder="https://http2.mlstatic.com/..."
+                          [ngModel]="productImageUrl()"
+                          (ngModelChange)="productImageUrl.set($event)"
+                        />
+                      </div>
+
+                      <!-- Toggle Destacado -->
+                      <div class="c-toggle-card">
+                        <div>
+                          <strong>⭐ Mostrar en Destacados</strong>
+                          <p>Aparecerá en los primeros lugares y en el carrusel superior.</p>
+                        </div>
+                        <mat-slide-toggle
+                          [checked]="productIsFeatured()"
+                          (change)="productIsFeatured.set($event.checked)"
+                        ></mat-slide-toggle>
+                      </div>
+                    </div>
+
+                    <!-- Columna 2: Vista Previa en Vivo (Live Card Preview) -->
+                    <div class="c-scraper-preview">
+                      <span class="c-preview-label">👁️ Vista Previa en Vivo (App & Web)</span>
+                      <div class="c-live-card">
+                        <div class="c-live-card__img-box">
+                          @if (productImageUrl()) {
+                            <img [src]="productImageUrl()" [alt]="productTitle()" />
+                          } @else {
+                            <mat-icon class="c-live-card__placeholder-icon">shopping_bag</mat-icon>
+                          }
+                          <span class="c-live-card__badge">{{ productBadgeTag() || '🔥 Recomendado' }}</span>
+                        </div>
+
+                        <div class="c-live-card__body">
+                          <span class="c-live-card__cat">{{ productCategory() }} • {{ productBrand() }}</span>
+                          <h4 class="c-live-card__title">{{ productTitle() || 'Título del Producto' }}</h4>
+                          @if (productPriceEstimate()) {
+                            <p class="c-live-card__price">{{ productPriceEstimate() }}</p>
+                          }
+                          <a
+                            [href]="productAffiliateUrl() || '#'"
+                            target="_blank"
+                            rel="noopener"
+                            class="c-btn c-btn--primary c-btn--full c-live-card__btn"
+                          >
+                            <span>Ver en {{ productBrand() }}</span>
+                            <mat-icon class="c-btn__icon">open_in_new</mat-icon>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Botonera de Guardado Final -->
+                  <div class="c-admin-form__actions" style="margin-top: 24px;">
+                    <button
+                      type="button"
+                      class="c-btn c-btn--primary c-btn--lg"
+                      (click)="onSaveProduct()"
+                      [disabled]="!productTitle() || !productAffiliateUrl()"
+                    >
+                      <mat-icon class="c-btn__icon">rocket_launch</mat-icon>
+                      <span>PUBLICAR EN FIRESTORE 🚀</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <!-- Grilla de Productos de Afiliados Existentes en Firestore -->
+            <div class="c-products-admin-grid">
+              @for (prod of affiliateProducts(); track prod.id) {
+                <div class="c-card c-product-admin-card">
+                  <div class="c-product-admin-card__img-wrapper">
+                    @if (prod.imageUrl) {
+                      <img [src]="prod.imageUrl" [alt]="prod.title" />
+                    } @else {
+                      <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: var(--tribu-primary);">shopping_bag</mat-icon>
+                    }
+                    <span class="c-tag-chip">{{ prod.badgeTag || '🔥 Recomendado' }}</span>
+                  </div>
+                  <div class="c-product-admin-card__body">
+                    <span class="c-badge-pill c-badge-pill--sm">{{ prod.category }} • {{ prod.brand }}</span>
+                    <h4 class="c-product-admin-card__title">{{ prod.title }}</h4>
+                    @if (prod.priceEstimate) {
+                      <p class="c-product-admin-card__price">{{ prod.priceEstimate }}</p>
+                    }
+                  </div>
+                  <div class="c-product-admin-card__actions">
+                    <a [href]="prod.affiliateUrl" target="_blank" rel="noopener" class="c-btn c-btn--secondary c-btn--sm">
+                      <mat-icon>open_in_new</mat-icon>
+                      <span>Abrir Link</span>
+                    </a>
+                    <button
+                      type="button"
+                      class="c-btn-danger-sm"
+                      (click)="onDeleteProduct(prod.id, prod.title)"
+                    >
+                      <mat-icon>delete</mat-icon>
+                      <span>Eliminar</span>
+                    </button>
+                  </div>
+                </div>
+              } @empty {
+                <div class="c-empty-state">
+                  <mat-icon class="c-empty-state__icon">shopping_bag</mat-icon>
+                  <p>No hay productos guardados en <code>/affiliate_products</code>. ¡Pegá tu primer enlace arriba!</p>
+                </div>
+              }
+            </div>
+          </section>
+        }
+
+        <!-- ================================================================ -->
+        <!-- PESTAÑA 6: DENUNCIAS Y MODERACIÓN DE CONTENIDO UGC -->
+        <!-- ================================================================ -->
+        @if (selectedTab() === 6) {
+          <section class="c-admin-section">
+            <div class="c-admin-section__header">
+              <div>
+                <h3 class="c-admin-section__title">⚠️ Moderación de Denuncias Comunitarias</h3>
+                <p class="c-admin-section__desc">
+                  Publicaciones, comentarios y perfiles reportados por la comunidad para revisión de seguridad.
+                </p>
+              </div>
+            </div>
+
+            <div class="c-reports-grid">
+              @for (rep of communityReports(); track rep.id) {
+                <div class="c-card c-report-card">
+                  <div class="c-report-card__header">
+                    <span class="c-badge-pill c-badge-pill--danger">Reporte: {{ rep.targetType }}</span>
+                    <span class="c-status-chip">{{ rep.status }}</span>
+                  </div>
+                  <h4 class="c-report-card__reason">Motivo: {{ rep.reason }}</h4>
+                  @if (rep.postContentSnippet) {
+                    <blockquote class="c-report-card__quote">"{{ rep.postContentSnippet }}"</blockquote>
+                  }
+                  <p class="c-report-card__meta">ID Objetivo: <code>{{ rep.targetId }}</code></p>
+
+                  <div class="c-report-card__actions">
+                    <button
+                      type="button"
+                      class="c-btn c-btn--primary c-btn--sm"
+                      (click)="onResolveReport(rep.id, 'RESOLVED')"
+                    >
+                      <mat-icon>check</mat-icon>
+                      <span>Marcar Resuelto</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="c-btn-danger-sm"
+                      (click)="onResolveReport(rep.id, 'DISMISSED')"
+                    >
+                      <mat-icon>close</mat-icon>
+                      <span>Descartar</span>
+                    </button>
+                  </div>
+                </div>
+              } @empty {
+                <div class="c-empty-state">
+                  <mat-icon class="c-empty-state__icon">verified</mat-icon>
+                  <p>Muro limpio: No hay denuncias pendientes de revisión en <code>/reports</code>.</p>
+                </div>
+              }
+            </div>
+          </section>
+        }
+      </div>
+    }
+  </div>
+</main>
+
+<app-footer></app-footer>

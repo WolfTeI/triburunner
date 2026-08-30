@@ -1,0 +1,265 @@
+.c-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background: var(--tribu-surface-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--tribu-border);
+  transition: all var(--tribu-transition-normal);
+
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  // Identidad
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--tribu-text);
+  }
+
+  &__logo-wrapper {
+    width: 44px;
+    height: 44px;
+    background: #000000;
+    border: 1.5px solid var(--tribu-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 12px var(--tribu-primary-glow);
+    transition: transform var(--tribu-transition-fast);
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  &__logo-img {
+    height: 26px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  &__brand-text {
+    font-family: var(--tribu-font-heading);
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  &__brand-highlight {
+    color: var(--tribu-primary);
+    margin-left: 2px;
+  }
+
+  // Lista de Enlaces Desktop
+  &__nav-list {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+
+    @media (max-width: 860px) {
+      display: none;
+    }
+  }
+
+  &__nav-link {
+    color: var(--tribu-text-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color var(--tribu-transition-fast);
+    position: relative;
+    padding: 6px 0;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--tribu-primary);
+      transition: width var(--tribu-transition-fast);
+      border-radius: 2px;
+    }
+
+    &:hover {
+      color: var(--tribu-text);
+
+      &::after {
+        width: 100%;
+      }
+    }
+
+    &--highlight {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--tribu-primary);
+      font-weight: 700;
+
+      &:hover {
+        color: var(--tribu-primary-hover);
+      }
+    }
+
+    &--admin {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #ffd700;
+      font-weight: 700;
+      background: rgba(255, 215, 0, 0.1);
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+
+      &:hover {
+        background: rgba(255, 215, 0, 0.2);
+        color: #ffd700;
+      }
+    }
+  }
+
+  &__nav-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  // Acciones y Botones
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__theme-toggle {
+    display: flex;
+    align-items: center;
+  }
+
+  &__theme-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--dark {
+      color: var(--tribu-primary);
+    }
+
+    &--light {
+      color: #f59e0b;
+    }
+  }
+
+  &__cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--tribu-primary);
+    color: #07090e;
+    font-family: var(--tribu-font-heading);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 9999px;
+    box-shadow: 0 0 20px var(--tribu-primary-glow);
+    transition: all var(--tribu-transition-fast);
+
+    &:hover {
+      background: var(--tribu-primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px var(--tribu-primary-glow);
+    }
+
+    @media (max-width: 860px) {
+      display: none;
+    }
+
+    &--full {
+      display: inline-flex;
+      width: 100%;
+      justify-content: center;
+      padding: 14px 20px;
+    }
+  }
+
+  &__cta-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  // Botón Hamburguesa
+  &__mobile-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--tribu-text);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+
+    @media (max-width: 860px) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  // Menú Móvil Desplegable
+  &__mobile-menu {
+    border-top: 1px solid var(--tribu-border);
+    background: var(--tribu-surface);
+    padding: 20px 24px;
+    box-shadow: var(--tribu-shadow-md);
+
+    @media (min-width: 861px) {
+      display: none;
+    }
+  }
+
+  &__mobile-nav-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__mobile-nav-link {
+    color: var(--tribu-text);
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: block;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--tribu-border);
+
+    &:hover {
+      color: var(--tribu-primary);
+    }
+  }
+
+  &__mobile-cta-wrapper {
+    margin-top: 8px;
+  }
+}
+

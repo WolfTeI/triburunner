@@ -1,0 +1,333 @@
+<div class="c-landing">
+  <!-- Barra de Navegación Superior -->
+  <app-toolbar></app-toolbar>
+
+  <!-- Hero Section -->
+  <app-header></app-header>
+
+  <!-- Contenido Principal -->
+  <main class="c-landing__main">
+    <!-- ==========================================
+         Sección 1: Características Principales
+         ========================================== -->
+    <section id="features" class="c-features">
+      <div class="container">
+        <div class="c-section-header">
+          <span class="badge-pill">Fisiología y Telemetría Running</span>
+          <h2 class="c-section-header__title">
+            Ciencia aplicada para <span class="text-gradient">dominar cada kilómetro</span>
+          </h2>
+          <p class="c-section-header__subtitle">
+            Herramientas de alto rendimiento diseñadas con tecnología de última generación para corredores populares, atletas de élite, running teams y entrenadores.
+          </p>
+        </div>
+
+        <div class="c-features__grid">
+          <!-- Card 1: GPS y Tracking -->
+          <article class="c-feature-card">
+            <div class="c-feature-card__icon-wrapper">
+              <mat-icon class="c-feature-card__icon">gps_fixed</mat-icon>
+            </div>
+            <h3 class="c-feature-card__title">Tracking GPS & Frecuencia de Muestreo</h3>
+            <p class="c-feature-card__text">
+              Algoritmo de filtrado espacial Kalman que calcula con precisión el ritmo instantáneo (Pace), distancia acumulada, desnivel positivo acumulado (D+) y cadencia de zancada (SPM).
+            </p>
+            <div class="c-feature-card__tag">Filtro de precisión satelital</div>
+          </article>
+
+          <!-- Card 2: Zonas Cardíacas Karvonen -->
+          <article class="c-feature-card c-feature-card--highlight">
+            <div class="c-feature-card__icon-wrapper">
+              <mat-icon class="c-feature-card__icon">monitor_heart</mat-icon>
+            </div>
+            <h3 class="c-feature-card__title">Zonas Cardíacas Karvonen (Z1 a Z5)</h3>
+            <p class="c-feature-card__text">
+              Cálculo dinámico basado en la Frecuencia Cardíaca de Reserva (HRmax - HRrest). Monitoreo de umbral anaeróbico, consumo máximo de oxígeno (VO2 Max estimado) y conexión Bluetooth LE a bandas Polar H10 y Garmin HRM.
+            </p>
+            <div class="c-feature-card__tag">Bluetooth Low Energy (BLE)</div>
+          </article>
+
+          <!-- Card 3: Plataforma para Entrenadores y Coaches -->
+          <article class="c-feature-card">
+            <div class="c-feature-card__icon-wrapper">
+              <mat-icon class="c-feature-card__icon">sports</mat-icon>
+            </div>
+            <h3 class="c-feature-card__title">Gestión para Coaches & Running Teams</h3>
+            <p class="c-feature-card__text">
+              Planificación semanal de microciclos, pasadas fraccionadas con zonas objetivo, fondos progresivos, control de escala de esfuerzo percibido (RPE) y recordatorios automáticos de pesaje y composición corporal.
+            </p>
+            <div class="c-feature-card__tag">Planes 1 a 1 y por Grupos</div>
+          </article>
+
+          <!-- Card 4: Fondos Grupales y Live Pelotón -->
+          <article class="c-feature-card">
+            <div class="c-feature-card__icon-wrapper">
+              <mat-icon class="c-feature-card__icon">groups</mat-icon>
+            </div>
+            <h3 class="c-feature-card__title">Fondos Grupales & Telemetría en Vivo</h3>
+            <p class="c-feature-card__text">
+              Cockpit en vivo de la Tribu. Visualizá la ubicación y el ritmo de cada compañero de equipo durante los fondos de fin de semana, ganá puntos de experiencia (XP) y competí en el ranking de equipos.
+            </p>
+            <div class="c-feature-card__tag">Live Cockpit de Pelotón</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         Sección 2: Showcase de Métricas Interactivo
+         ========================================== -->
+    <section id="metrics" class="c-metrics-showcase">
+      <div class="container">
+        <div class="c-section-header">
+          <span class="badge-pill">Simulador de Telemetría Dinámica</span>
+          <h2 class="c-section-header__title">
+            Monitoreo en tiempo real <span class="text-gradient">según tu intensidad</span>
+          </h2>
+          <p class="c-section-header__subtitle">
+            Experimentá cómo responde el motor de telemetría y zonas cardíacas de TribuRunner en diferentes fases de carrera.
+          </p>
+        </div>
+
+        <!-- Selector de Modos de Entrenamiento -->
+        <div class="c-metrics-showcase__selector">
+          @for (mode of workoutModes; track mode.modeName) {
+            <button
+              type="button"
+              class="c-metrics-showcase__tab-btn"
+              [class.c-metrics-showcase__tab-btn--active]="activeWorkout().modeName === mode.modeName"
+              (click)="selectWorkoutMode(mode)"
+            >
+              {{ mode.modeName }}
+            </button>
+          }
+        </div>
+
+        <!-- Consola de Telemetría Dinámica -->
+        <div class="c-metrics-showcase__console">
+          <!-- Header de la consola -->
+          <div class="c-metrics-showcase__console-header">
+            <div class="c-metrics-showcase__live-pill">
+              <span class="c-metrics-showcase__live-dot"></span>
+              <span>SESIÓN TELEMÉTRICA • {{ activeWorkout().modeName }}</span>
+            </div>
+            <div class="c-metrics-showcase__zone-pill">
+              <mat-icon class="c-metrics-showcase__zone-icon">favorite</mat-icon>
+              <span>{{ activeWorkout().zone }}</span>
+            </div>
+          </div>
+
+          <!-- Grilla de Métricas Principales -->
+          <div class="c-metrics-showcase__grid">
+            <!-- Métrica 1: Ritmo -->
+            <div class="c-metric-tile">
+              <span class="c-metric-tile__label">Ritmo Promedio (Pace)</span>
+              <div class="c-metric-tile__value-group">
+                <span class="c-metric-tile__value">{{ activeWorkout().pace }}</span>
+                <span class="c-metric-tile__unit">min/km</span>
+              </div>
+              <div class="c-metric-tile__bar">
+                <div class="c-metric-tile__bar-fill" [style.width.%]="85"></div>
+              </div>
+            </div>
+
+            <!-- Métrica 2: Frecuencia Cardíaca -->
+            <div class="c-metric-tile c-metric-tile--accent">
+              <span class="c-metric-tile__label">Frecuencia Cardíaca (HR)</span>
+              <div class="c-metric-tile__value-group">
+                <span class="c-metric-tile__value">{{ activeWorkout().heartRate }}</span>
+                <span class="c-metric-tile__unit">BPM</span>
+              </div>
+              <div class="c-metric-tile__bar">
+                <div class="c-metric-tile__bar-fill c-metric-tile__bar-fill--bpm" [style.width.%]="(activeWorkout().heartRate / 200) * 100"></div>
+              </div>
+            </div>
+
+            <!-- Métrica 3: Distancia -->
+            <div class="c-metric-tile">
+              <span class="c-metric-tile__label">Distancia Acumulada</span>
+              <div class="c-metric-tile__value-group">
+                <span class="c-metric-tile__value">{{ activeWorkout().distance }}</span>
+                <span class="c-metric-tile__unit">KM</span>
+              </div>
+              <div class="c-metric-tile__bar">
+                <div class="c-metric-tile__bar-fill" [style.width.%]="70"></div>
+              </div>
+            </div>
+
+            <!-- Métrica 4: Cadencia -->
+            <div class="c-metric-tile">
+              <span class="c-metric-tile__label">Cadencia de Zancada</span>
+              <div class="c-metric-tile__value-group">
+                <span class="c-metric-tile__value">{{ activeWorkout().cadence }}</span>
+                <span class="c-metric-tile__unit">SPM</span>
+              </div>
+              <div class="c-metric-tile__bar">
+                <div class="c-metric-tile__bar-fill" [style.width.%]="(activeWorkout().cadence / 200) * 100"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         Sección 3: Atletas y Entrenadores
+         ========================================== -->
+    <section id="coaches" class="c-roles-section">
+      <div class="container">
+        <div class="c-roles-section__grid">
+          <!-- Card para Atletas -->
+          <div class="c-role-card">
+            <div class="c-role-card__header">
+              <div class="c-role-card__badge">Para Corredores & Atletas</div>
+              <h3 class="c-role-card__title">Dominá tus marcas y alcanzá el podio</h3>
+              <p class="c-role-card__text">
+                Desde tus primeros 5K hasta maratones de 42K y ultramaratones de montaña, TribuRunner te brinda análisis de fatiga, alertas de ritmo por audio y medallas de constancia.
+              </p>
+            </div>
+            <ul class="c-role-card__list">
+              <li>
+                <mat-icon class="c-role-card__check-icon">check_circle</mat-icon>
+                <span>Registro automático de splits por kilómetro y métricas de elevación.</span>
+              </li>
+              <li>
+                <mat-icon class="c-role-card__check-icon">check_circle</mat-icon>
+                <span>Sincronización directa con las sesiones asignadas por tu coach.</span>
+              </li>
+              <li>
+                <mat-icon class="c-role-card__check-icon">check_circle</mat-icon>
+                <span>Muro social interactivo: compartí tus entrenamientos con fotos y puñitos.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Card para Entrenadores / Teams -->
+          <div class="c-role-card c-role-card--highlight">
+            <div class="c-role-card__header">
+              <div class="c-role-card__badge c-role-card__badge--coach">Para Coaches & Running Teams</div>
+              <h3 class="c-role-card__title">Estructura y control total para tu equipo</h3>
+              <p class="c-role-card__text">
+                Optimizá la gestión de tu running team. Creá microciclos con pasadas a ritmos objetivo, controlá el cumplimiento de cada alumno y visualizá su evolución física sin planillas manuales.
+              </p>
+            </div>
+            <ul class="c-role-card__list">
+              <li>
+                <mat-icon class="c-role-card__check-icon">check_circle</mat-icon>
+                <span>Constructor ágil de series de pasadas, fondos progresivos y tiradas largas.</span>
+              </li>
+              <li>
+                <mat-icon class="c-role-card__check-icon">check_circle</mat-icon>
+                <span>Monitoreo de cumplimiento efectivo frente al ritmo objetivo prescrito.</span>
+              </li>
+              <li>
+                <mat-icon class="c-role-card__check-icon">check_circle</mat-icon>
+                <span>Canal de feedback bidireccional y registro de evolución de peso corporal.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         Sección 4: Comunidad & Testimonios
+         ========================================== -->
+    <section id="community" class="c-community-section">
+      <div class="container">
+        <div class="c-section-header">
+          <span class="badge-pill">La Fuerza de la Tribu</span>
+          <h2 class="c-section-header__title">
+            Correr acompañados <span class="text-gradient">nos hace imparables</span>
+          </h2>
+          <p class="c-section-header__subtitle">
+            Voces de atletas, preparadores físicos y corredores que entrenan con el ecosistema TribuRunner.
+          </p>
+        </div>
+
+        <div class="c-community-section__grid">
+          <div class="c-testimonial-card">
+            <p class="c-testimonial-card__quote">
+              "TribuRunner revolucionó la dinámica de mi grupo. Sé con exactitud si cada corredor cumplió las series en Zona 4 o si se pasaron de rosca, todo centralizado y con alertas precisas."
+            </p>
+            <div class="c-testimonial-card__author">
+              <div class="c-testimonial-card__avatar">MC</div>
+              <div>
+                <span class="c-testimonial-card__name">Martín Cabrera</span>
+                <span class="c-testimonial-card__role">Head Coach • Resistencia Running Team</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="c-testimonial-card">
+            <p class="c-testimonial-card__quote">
+              "La precisión del ritmo instantáneo con el algoritmo satelital y el cálculo de zonas Karvonen me permitieron bajar 8 minutos en mis 21K. La estética oscura con verde neón es insuperable."
+            </p>
+            <div class="c-testimonial-card__author">
+              <div class="c-testimonial-card__avatar">LV</div>
+              <div>
+                <span class="c-testimonial-card__name">Lucía Valenzuela</span>
+                <span class="c-testimonial-card__role">Maratonista 42K</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="c-testimonial-card">
+            <p class="c-testimonial-card__quote">
+              "El Live Cockpit durante los fondos de domingo y el sistema de puntos de Tribu motivan a todo el equipo a salir a entrenar incluso con 3 grados en pleno invierno."
+            </p>
+            <div class="c-testimonial-card__author">
+              <div class="c-testimonial-card__avatar">GR</div>
+              <div>
+                <span class="c-testimonial-card__name">Gonzalo Rossi</span>
+                <span class="c-testimonial-card__role">Trail Runner & Capitán de Tribu</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         Sección 5: Call to Action de Descarga
+         ========================================== -->
+    <section id="download" class="c-cta-banner">
+      <div class="container">
+        <div class="c-cta-banner__card">
+          <div class="c-cta-banner__content">
+            <span class="badge-pill">Ecosistema Android & Web</span>
+            <h2 class="c-cta-banner__title">
+              ¿Listo para sumarte a la <span class="text-gradient">Tribu</span>?
+            </h2>
+            <p class="c-cta-banner__text">
+              Instalá TribuRunner en tu dispositivo Android o accedé desde la web para gestionar entrenamientos, carreras oficiales y métricas en tiempo real.
+            </p>
+            <div class="c-cta-banner__actions">
+              <a
+                href="https://play.google.com/store/apps/details?id=ar.com.wolftei.triburunner"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="c-btn c-btn--primary"
+              >
+                <mat-icon class="c-btn__icon">shop</mat-icon>
+                <span>Descargar en Google Play</span>
+              </a>
+              <a routerLink="/equipamiento" class="c-btn c-btn--secondary">
+                <mat-icon class="c-btn__icon">shopping_bag</mat-icon>
+                <span>Ver Relojes & Bandas Compatibles</span>
+              </a>
+            </div>
+          </div>
+          <div class="c-cta-banner__visual" aria-hidden="true">
+            <div class="c-cta-banner__circle">
+              <img src="tribu_runner_logo.png" alt="Logotipo TribuRunner" class="c-cta-banner__logo" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer Institucional -->
+  <app-footer></app-footer>
+</div>

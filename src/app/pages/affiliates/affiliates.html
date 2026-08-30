@@ -1,0 +1,322 @@
+<div class="c-affiliates">
+  <!-- Toolbar Superior -->
+  <app-toolbar></app-toolbar>
+
+  <main class="c-affiliates__main">
+    <!-- Hero / Encabezado de la Tienda de Afiliados -->
+    <header class="c-affiliates-hero">
+      <div class="container">
+        <div class="c-affiliates-hero__content">
+          <div class="badge-pill">
+            <mat-icon class="c-affiliates-hero__badge-icon">shopping_bag</mat-icon>
+            <span>{{ activeTab() === 'merch' ? 'Merchandising Oficial Tribu Runner' : 'Equipamiento Oficial Recomendado' }}</span>
+          </div>
+
+          <h1 class="c-affiliates-hero__title">
+            @if (activeTab() === 'merch') {
+              Vestí los colores de tu <span class="text-gradient">Tribu</span>
+            } @else {
+              El mejor equipamiento para <span class="text-gradient">tu entrenamiento</span>
+            }
+          </h1>
+
+          <p class="c-affiliates-hero__subtitle">
+            @if (activeTab() === 'merch') {
+              Indumentaria técnica de alto rendimiento diseñada por corredores para corredores: remeras Dry-Fit, camperas rompevientos, shorts 2-en-1 y calzas con el logo oficial.
+            } @else {
+              Relojes GPS, bandas cardíacas, hidratación y accesorios testeados por corredores y entrenadores de la Tribu, con compra segura y directa en Mercado Libre.
+            }
+          </p>
+
+          <!-- Disclaimer de Transparencia de Afiliados (solo en gadgets) -->
+          @if (activeTab() === 'gadgets') {
+            <div class="c-affiliates-hero__disclaimer">
+              <mat-icon class="c-affiliates-hero__disclaimer-icon">verified_user</mat-icon>
+              <span>
+                <strong>Comunidad 100% transparente:</strong> Al comprar a través de estos enlaces oficiales de Mercado Libre, apoyás el desarrollo de Tribu Runner sin ningún costo adicional para vos.
+              </span>
+            </div>
+          }
+        </div>
+      </div>
+    </header>
+
+    <!-- Switcher de Pestañas (Visible únicamente en Modo Desarrollo) -->
+    @if (isDev) {
+      <section class="c-affiliates-tab-nav" aria-label="Navegación de secciones">
+        <div class="container">
+          <div class="c-affiliates-tab-nav__wrapper">
+            <button
+              type="button"
+              class="c-affiliates-tab-nav__btn"
+              [class.c-affiliates-tab-nav__btn--active]="activeTab() === 'gadgets'"
+              (click)="setActiveTab('gadgets')"
+            >
+              <mat-icon class="c-affiliates-tab-nav__icon">devices</mat-icon>
+              <span>Equipamiento & Gadgets (ML)</span>
+            </button>
+
+            <button
+              type="button"
+              class="c-affiliates-tab-nav__btn c-affiliates-tab-nav__btn--dev"
+              [class.c-affiliates-tab-nav__btn--active]="activeTab() === 'merch'"
+              (click)="setActiveTab('merch')"
+            >
+              <mat-icon class="c-affiliates-tab-nav__icon">checkroom</mat-icon>
+              <span>Indumentaria Oficial Tribu</span>
+              <span class="c-affiliates-tab-nav__dev-badge">DEV ONLY</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- ==========================================
+         VISTA 1: GADGETS & AFILIADOS MERCADO LIBRE
+         ========================================== -->
+    @if (activeTab() === 'gadgets') {
+      <!-- Controles: Buscador y Filtros por Categoría -->
+      <section class="c-affiliates-controls">
+        <div class="container">
+          <!-- Buscador -->
+          <div class="c-affiliates-search">
+            <div class="c-affiliates-search__wrapper">
+              <mat-icon class="c-affiliates-search__icon">search</mat-icon>
+              <input
+                type="text"
+                class="c-affiliates-search__input"
+                placeholder="Buscar por dispositivo, marca o accesorio (ej: Garmin, Polar, Chaleco)..."
+                [ngModel]="searchQuery()"
+                (ngModelChange)="updateSearch($event)"
+                aria-label="Buscar equipamiento"
+              />
+              @if (searchQuery()) {
+                <button
+                  type="button"
+                  class="c-affiliates-search__clear"
+                  (click)="updateSearch('')"
+                  aria-label="Limpiar búsqueda"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Chips de Categoría -->
+          <div class="c-affiliates-chips" role="tablist" aria-label="Filtrar por categoría">
+            @for (cat of categories; track cat) {
+              <button
+                type="button"
+                class="c-affiliates-chips__item"
+                [class.c-affiliates-chips__item--active]="selectedCategory() === cat"
+                (click)="setCategory(cat)"
+                role="tab"
+                [attr.aria-selected]="selectedCategory() === cat"
+              >
+                {{ cat }}
+              </button>
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- Grilla de Productos de Afiliados -->
+      <section class="c-affiliates-grid-section">
+        <div class="container">
+          <div class="c-affiliates-grid-header">
+            <p class="c-affiliates-grid-header__count">
+              Mostrando <strong>{{ filteredProducts().length }}</strong> {{ filteredProducts().length === 1 ? 'producto recomendado' : 'productos recomendados' }}
+            </p>
+          </div>
+
+          @if (filteredProducts().length > 0) {
+            <div class="c-affiliates-grid">
+              @for (item of filteredProducts(); track item.id) {
+                <article class="c-gear-card">
+                  <!-- Bloque de Imagen Destacada Grande (Estilo Mercado Libre / E-Commerce) -->
+                  <div class="c-gear-card__media">
+                    @if (item.imageUrl) {
+                      <img [src]="item.imageUrl" [alt]="item.name" class="c-gear-card__product-image" loading="lazy" />
+                    } @else {
+                      <div class="c-gear-card__placeholder">
+                        <mat-icon class="c-gear-card__placeholder-icon">{{ item.icon }}</mat-icon>
+                      </div>
+                    }
+
+                    @if (item.badge) {
+                      <span class="c-gear-card__floating-badge">{{ item.badge }}</span>
+                    }
+                  </div>
+
+                  <!-- Cuerpo de la Card -->
+                  <div class="c-gear-card__body">
+                    <span class="c-gear-card__category-tag">{{ item.category }}</span>
+                    <h3 class="c-gear-card__title">{{ item.name }}</h3>
+
+                    @if (item.priceEstimate) {
+                      <div class="c-gear-card__price-box">
+                        <span class="c-gear-card__price">{{ item.priceEstimate }}</span>
+                      </div>
+                    }
+
+                    <p class="c-gear-card__desc">{{ item.description }}</p>
+
+                    <!-- Especificaciones Clave -->
+                    <ul class="c-gear-card__specs">
+                      @for (spec of item.specs; track spec) {
+                        <li class="c-gear-card__spec-item">
+                          <mat-icon class="c-gear-card__spec-icon">check</mat-icon>
+                          <span>{{ spec }}</span>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+
+                  <!-- Footer de la Card con Enlace a Mercado Libre -->
+                  <div class="c-gear-card__footer">
+                    <div class="c-gear-card__estimate">
+                      <span class="c-gear-card__estimate-label">Disponible en:</span>
+                      <span class="c-gear-card__meli-badge">
+                        <mat-icon class="c-gear-card__meli-icon">shopping_cart</mat-icon>
+                        Mercado Libre
+                      </span>
+                    </div>
+
+                    <a
+                      [href]="item.affiliateUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="c-btn c-btn--primary c-btn--full c-gear-card__btn"
+                      [attr.aria-label]="'Ver ' + item.name + ' en Mercado Libre'"
+                    >
+                      <span>Ver en Mercado Libre</span>
+                      <mat-icon class="c-btn__icon">open_in_new</mat-icon>
+                    </a>
+                  </div>
+                </article>
+              }
+            </div>
+          } @else {
+            <!-- Estado Vacío -->
+            <div class="c-affiliates-empty">
+              <div class="c-affiliates-empty__icon-wrapper">
+                <mat-icon class="c-affiliates-empty__icon">search_off</mat-icon>
+              </div>
+              <h3 class="c-affiliates-empty__title">No encontramos productos para esa búsqueda</h3>
+              <p class="c-affiliates-empty__text">
+                Probá con otras palabras clave o explorá todas las categorías disponibles.
+              </p>
+              <button type="button" class="c-btn c-btn--secondary" (click)="clearFilters()">
+                <mat-icon class="c-btn__icon">restart_alt</mat-icon>
+                <span>Restablecer Filtros</span>
+              </button>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ==========================================
+         VISTA 2: INDUMENTARIA OFICIAL TRIBU RUNNER
+         (Condición: isDevMode() === true)
+         ========================================== -->
+    @if (isDev && activeTab() === 'merch') {
+      <section class="c-merch-section">
+        <div class="container">
+          <!-- Banner de Aviso de Desarrollo -->
+          <div class="c-dev-banner">
+            <div class="c-dev-banner__header">
+              <mat-icon class="c-dev-banner__icon">construction</mat-icon>
+              <div>
+                <h2 class="c-dev-banner__title">Sección en Desarrollo • Próximo Lanzamiento Oficial</h2>
+                <p class="c-dev-banner__desc">
+                  Esta sección está protegida con la condición <code class="c-dev-banner__code">isDevMode()</code>.
+                  Es visible para diseñar y maquetar los productos oficiales y no impactará en el bundle de producción.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grilla de Indumentaria Oficial -->
+          <div class="c-merch-grid">
+            @for (product of officialMerch; track product.id) {
+              <article class="c-merch-card">
+                <!-- Header con Icono Oficial y Badge -->
+                <div class="c-merch-card__header">
+                  <div class="c-merch-card__logo-frame">
+                    <img src="tribu_runner_logo.png" alt="Logo Tribu" class="c-merch-card__logo-icon" />
+                  </div>
+                  <div class="c-merch-card__badges">
+                    <span class="c-merch-card__badge-special">{{ product.badge }}</span>
+                    <span class="c-merch-card__type-tag">{{ product.type }}</span>
+                  </div>
+                </div>
+
+                <!-- Info Principal -->
+                <div class="c-merch-card__body">
+                  <h3 class="c-merch-card__title">{{ product.name }}</h3>
+                  <p class="c-merch-card__desc">{{ product.description }}</p>
+
+                  <!-- Selector de Talles Interactivo -->
+                  <div class="c-merch-card__size-selector">
+                    <span class="c-merch-card__selector-label">Talles Disponibles:</span>
+                    <div class="c-merch-card__size-chips">
+                      @for (size of product.sizes; track size) {
+                        <button
+                          type="button"
+                          class="c-merch-card__size-chip"
+                          [class.c-merch-card__size-chip--selected]="selectedSizes()[product.id] === size"
+                          (click)="selectSize(product.id, size)"
+                        >
+                          {{ size }}
+                        </button>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Colores Oficiales -->
+                  <div class="c-merch-card__colors">
+                    <span class="c-merch-card__selector-label">Colores:</span>
+                    <div class="c-merch-card__color-tags">
+                      @for (col of product.colors; track col) {
+                        <span class="c-merch-card__color-pill">{{ col }}</span>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Características -->
+                  <ul class="c-merch-card__features">
+                    @for (feat of product.features; track feat) {
+                      <li class="c-merch-card__feature-item">
+                        <mat-icon class="c-merch-card__check-icon">verified</mat-icon>
+                        <span>{{ feat }}</span>
+                      </li>
+                    }
+                  </ul>
+                </div>
+
+                <!-- Footer de la Card -->
+                <div class="c-merch-card__footer">
+                  <div class="c-merch-card__price-box">
+                    <span class="c-merch-card__price-label">Precio Estimado:</span>
+                    <span class="c-merch-card__price-value">{{ product.pricePlaceholder }}</span>
+                  </div>
+
+                  <button type="button" class="c-btn c-btn--primary c-merch-card__cta-btn">
+                    <mat-icon class="c-btn__icon">notifications_active</mat-icon>
+                    <span>Avisarme del Lanzamiento</span>
+                  </button>
+                </div>
+              </article>
+            }
+          </div>
+        </div>
+      </section>
+    }
+  </main>
+
+  <!-- Footer Institucional -->
+  <app-footer></app-footer>
+</div>
+

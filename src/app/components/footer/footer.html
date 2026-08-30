@@ -1,0 +1,74 @@
+<footer class="c-footer">
+  <div class="c-footer__container container">
+    <!-- Columna Principal de Marca -->
+    <div class="c-footer__brand-col">
+      <div class="c-footer__brand">
+        <div class="c-footer__logo-wrapper">
+          <img src="tribu_runner_logo.png" alt="Logo de Tribu Runner" class="c-footer__logo-img" />
+        </div>
+        <span class="c-footer__brand-title">Tribu<span class="c-footer__brand-highlight">Runner</span></span>
+      </div>
+      <p class="c-footer__tagline">
+        La plataforma integral diseñada para corredores apasionados y entrenadores que buscan superarse cada día. Más que una aplicación, una tribu en movimiento.
+      </p>
+      <div class="c-footer__socials">
+        <a href="#" class="c-footer__social-link" aria-label="Instagram">
+          <mat-icon>camera_alt</mat-icon>
+        </a>
+        <a href="#" class="c-footer__social-link" aria-label="YouTube">
+          <mat-icon>smart_display</mat-icon>
+        </a>
+        <a href="#" class="c-footer__social-link" aria-label="Email de Contacto">
+          <mat-icon>mail</mat-icon>
+        </a>
+      </div>
+    </div>
+
+    <!-- Columna 1: Plataforma -->
+    <div class="c-footer__nav-col">
+      <h3 class="c-footer__col-title">Plataforma</h3>
+      <ul class="c-footer__links">
+        <li><a routerLink="/home" fragment="features" class="c-footer__link">Tracking GPS</a></li>
+        <li><a routerLink="/home" fragment="metrics" class="c-footer__link">Métricas en Vivo</a></li>
+        <li><a routerLink="/equipamiento" class="c-footer__link">Equipamiento & Relojes (ML)</a></li>
+        <li><a routerLink="/home" fragment="community" class="c-footer__link">Comunidad & Desafíos</a></li>
+        <li><a routerLink="/home" fragment="download" class="c-footer__link">Descargar App Android</a></li>
+      </ul>
+    </div>
+
+    <!-- Columna 2: Entrenadores -->
+    <div class="c-footer__nav-col">
+      <h3 class="c-footer__col-title">Para Coaches</h3>
+      <ul class="c-footer__links">
+        <li><a routerLink="/home" fragment="coaches" class="c-footer__link">Panel de Entrenador</a></li>
+        <li><a routerLink="/home" fragment="coaches" class="c-footer__link">Planes Personalizados</a></li>
+        <li><a routerLink="/home" fragment="coaches" class="c-footer__link">Seguimiento de Atletas</a></li>
+        <li><a routerLink="/home" fragment="coaches" class="c-footer__link">Running Teams</a></li>
+      </ul>
+    </div>
+
+    <!-- Columna 3: Legal & Soporte -->
+    <div class="c-footer__nav-col">
+      <h3 class="c-footer__col-title">Soporte & Legal</h3>
+      <ul class="c-footer__links">
+        <li><a href="#" class="c-footer__link">Términos de Servicio</a></li>
+        <li><a href="#" class="c-footer__link">Política de Privacidad</a></li>
+        <li><a href="#" class="c-footer__link">Seguridad y Datos</a></li>
+        <li><a href="#" class="c-footer__link">Centro de Ayuda</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Barra Inferior de Copyright -->
+  <div class="c-footer__bottom">
+    <div class="c-footer__bottom-container container">
+      <p class="c-footer__copyright">
+        © {{ currentYear() }} <strong>Tribu Runner</strong>. Todos los derechos reservados.
+      </p>
+      <p class="c-footer__made-with">
+        Diseñado con pasión por y para la comunidad runner.
+      </p>
+    </div>
+  </div>
+</footer>
+

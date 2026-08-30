@@ -1,0 +1,258 @@
+.c-hero {
+  position: relative;
+  width: 100%;
+  padding: 80px 0 100px;
+  overflow: hidden;
+  background: radial-gradient(
+    circle at 50% -20%,
+    rgba(var(--tribu-primary-rgb), 0.15),
+    transparent 70%
+  );
+
+  // Efectos de resplandor de fondo
+  &__glow-bg {
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.25;
+    pointer-events: none;
+
+    &--left {
+      top: 10%;
+      left: -100px;
+      background: var(--tribu-primary);
+    }
+
+    &--right {
+      bottom: 5%;
+      right: -80px;
+      background: var(--tribu-accent);
+    }
+  }
+
+  &__container {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: center;
+    gap: 48px;
+    position: relative;
+    z-index: 1;
+
+    @media (max-width: 960px) {
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: 56px;
+    }
+  }
+
+  // Contenido de texto
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    @media (max-width: 960px) {
+      align-items: center;
+    }
+  }
+
+  &__badge {
+    align-self: flex-start;
+
+    @media (max-width: 960px) {
+      align-self: center;
+    }
+  }
+
+  &__badge-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &__title {
+    font-family: var(--tribu-font-heading);
+    font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    color: var(--tribu-text);
+  }
+
+  &__description {
+    font-size: 1.125rem;
+    color: var(--tribu-text-muted);
+    max-width: 580px;
+    line-height: 1.7;
+  }
+
+  // Acciones / Botones
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+
+    @media (max-width: 960px) {
+      justify-content: center;
+    }
+  }
+
+  // Estadísticas del Hero
+  &__stats {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--tribu-border);
+
+    @media (max-width: 600px) {
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+    }
+  }
+
+  &__stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__stat-number {
+    font-family: var(--tribu-font-heading);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--tribu-primary);
+  }
+
+  &__stat-label {
+    font-size: 0.85rem;
+    color: var(--tribu-text-muted);
+  }
+
+  &__stat-divider {
+    width: 1px;
+    height: 36px;
+    background: var(--tribu-border);
+
+    @media (max-width: 600px) {
+      display: none;
+    }
+  }
+
+  // Visual / Emblema Hero
+  &__visual {
+    display: flex;
+    justify-content: center;
+    position: relative;
+  }
+
+  &__visual-card {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    padding: 36px;
+    background: var(--tribu-surface-card);
+    border: 1px solid var(--tribu-border);
+    border-radius: 28px;
+    box-shadow: var(--tribu-shadow-md);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform var(--tribu-transition-normal);
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+
+  &__logo-frame {
+    width: 100%;
+    max-width: 280px;
+    padding: 24px;
+    background: #000000;
+    border-radius: 20px;
+    border: 2px solid var(--tribu-primary);
+    box-shadow: 0 0 30px var(--tribu-primary-glow);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__logo-img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+  }
+
+  // Floating Tags
+  &__floating-tag {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 18px;
+    background: var(--tribu-surface);
+    border: 1px solid var(--tribu-border-active);
+    border-radius: 16px;
+    box-shadow: var(--tribu-shadow-sm);
+    z-index: 2;
+    animation: float 4s ease-in-out infinite;
+
+    &--top {
+      top: -16px;
+      right: -12px;
+      animation-delay: 0s;
+    }
+
+    &--bottom {
+      bottom: -16px;
+      left: -12px;
+      animation-delay: 2s;
+    }
+
+    @media (max-width: 480px) {
+      position: static;
+      margin-top: 12px;
+    }
+  }
+
+  &__floating-icon {
+    color: var(--tribu-primary);
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+
+  &__floating-title {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--tribu-text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  &__floating-value {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--tribu-text);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+

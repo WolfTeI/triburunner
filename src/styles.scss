@@ -1,1 +1,227 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+// ==========================================
+// Variables y Tokens Globales del Sistema
+// ==========================================
+:root {
+  // Tipografías
+  --tribu-font-heading: 'Outfit', sans-serif;
+  --tribu-font-body: 'Inter', sans-serif;
+
+  // Transiciones
+  --tribu-transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --tribu-transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --tribu-transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+  // Paleta Light Mode (Default)
+  --tribu-primary: #008f11;
+  --tribu-primary-hover: #00730e;
+  --tribu-primary-rgb: 0, 143, 17;
+  --tribu-primary-glow: rgba(0, 143, 17, 0.25);
+  --tribu-accent: #0070f3;
+  --tribu-bg: #f8fafc;
+  --tribu-surface: #ffffff;
+  --tribu-surface-card: #f1f5f9;
+  --tribu-surface-glass: rgba(255, 255, 255, 0.85);
+  --tribu-border: rgba(0, 0, 0, 0.08);
+  --tribu-border-active: rgba(0, 143, 17, 0.4);
+  --tribu-text: #0f172a;
+  --tribu-text-muted: #64748b;
+  --tribu-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --tribu-shadow-md: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --tribu-shadow-glow: 0 0 25px rgba(0, 143, 17, 0.2);
+
+  // Angular Material System Tokens - Light
+  --mat-sys-primary: #008f11;
+  --mat-sys-on-primary: #ffffff;
+  --mat-sys-secondary: #0f172a;
+  --mat-sys-on-secondary: #ffffff;
+  --mat-sys-tertiary: #0070f3;
+  --mat-sys-on-tertiary: #ffffff;
+  --mat-sys-background: #f8fafc;
+  --mat-sys-on-background: #0f172a;
+  --mat-sys-surface: #ffffff;
+  --mat-sys-on-surface: #0f172a;
+}
+
+// Paleta Dark Mode (Identidad Tribu Runner)
+html.dark-theme,
+.dark-theme {
+  --tribu-primary: #39ff14;
+  --tribu-primary-hover: #50ff33;
+  --tribu-primary-rgb: 57, 255, 20;
+  --tribu-primary-glow: rgba(57, 255, 20, 0.35);
+  --tribu-accent: #00e5ff;
+  --tribu-bg: #07090e;
+  --tribu-surface: #0e131d;
+  --tribu-surface-card: #141c2b;
+  --tribu-surface-glass: rgba(14, 19, 29, 0.82);
+  --tribu-border: rgba(255, 255, 255, 0.08);
+  --tribu-border-active: rgba(57, 255, 20, 0.4);
+  --tribu-text: #ffffff;
+  --tribu-text-muted: #94a3b8;
+  --tribu-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --tribu-shadow-md: 0 12px 35px rgba(0, 0, 0, 0.6);
+  --tribu-shadow-glow: 0 0 30px rgba(57, 255, 20, 0.3);
+
+  // Angular Material System Tokens - Dark
+  --mat-sys-primary: #39ff14;
+  --mat-sys-on-primary: #07090e;
+  --mat-sys-secondary: #00e5ff;
+  --mat-sys-on-secondary: #07090e;
+  --mat-sys-tertiary: #ffffff;
+  --mat-sys-on-tertiary: #07090e;
+  --mat-sys-background: #07090e;
+  --mat-sys-on-background: #ffffff;
+  --mat-sys-surface: #0e131d;
+  --mat-sys-on-surface: #ffffff;
+}
+
+// Reset y Normalización
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  scroll-behavior: smooth;
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: mat.$azure-palette,
+        tertiary: mat.$green-palette,
+      ),
+      typography: (
+        brand-family: (
+          Outfit,
+          sans-serif,
+        ),
+        plain-family: (
+          Inter,
+          sans-serif,
+        ),
+      ),
+      density: 0,
+    )
+  );
+}
+
+body {
+  min-height: 100%;
+  background-color: var(--tribu-bg);
+  color: var(--tribu-text);
+  font-family: var(--tribu-font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  transition: background-color var(--tribu-transition-normal), color var(--tribu-transition-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Clases Utilitarias Globales
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--tribu-primary) 0%, var(--tribu-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  background: rgba(var(--tribu-primary-rgb), 0.12);
+  border: 1px solid var(--tribu-border-active);
+  color: var(--tribu-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+// Botones Globales Reutilizables
+.c-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--tribu-font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 14px 28px;
+  border-radius: 9999px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  outline: none;
+  transition: all var(--tribu-transition-fast);
+
+  &--primary {
+    background: var(--tribu-primary);
+    color: #07090e !important;
+    box-shadow: 0 0 25px var(--tribu-primary-glow);
+
+    &:hover {
+      background: var(--tribu-primary-hover);
+      color: #07090e !important;
+      transform: translateY(-3px);
+      box-shadow: 0 0 35px var(--tribu-primary-glow);
+    }
+  }
+
+  &--secondary {
+    background: var(--tribu-surface-card);
+    color: var(--tribu-text) !important;
+    border-color: var(--tribu-border);
+
+    &:hover {
+      background: var(--tribu-surface);
+      border-color: var(--tribu-border-active);
+      color: var(--tribu-text) !important;
+      transform: translateY(-3px);
+    }
+  }
+
+  &__icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// Scrollbar personalizado
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--tribu-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--tribu-surface-card);
+  border-radius: 4px;
+  border: 2px solid var(--tribu-bg);
+
+  &:hover {
+    background: var(--tribu-primary);
+  }
+}
+
