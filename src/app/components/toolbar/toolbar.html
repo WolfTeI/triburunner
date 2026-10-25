@@ -25,12 +25,6 @@
           <span>Equipamiento</span>
         </a>
       </li>
-      <li class="c-toolbar__nav-item">
-        <a routerLink="/admin" class="c-toolbar__nav-link c-toolbar__nav-link--admin">
-          <mat-icon class="c-toolbar__nav-icon">admin_panel_settings</mat-icon>
-          <span>{{ isStaffOrFounder() ? (adminRole() === 'FOUNDER' ? '👑 Founder' : '🛡️ Moderador') : 'Admin' }}</span>
-        </a>
-      </li>
     </ul>
 
     <!-- Acciones (Toggle de Tema + Botón CTA + Botón Móvil) -->
@@ -90,11 +84,6 @@
         <li>
           <a routerLink="/equipamiento" class="c-toolbar__mobile-nav-link" (click)="closeMobileMenu()">
             🛒 Equipamiento & Relojes (ML)
-          </a>
-        </li>
-        <li>
-          <a routerLink="/admin" class="c-toolbar__mobile-nav-link" (click)="closeMobileMenu()">
-            🛡️ Panel de Administración (Firestore)
           </a>
         </li>
         <li class="c-toolbar__mobile-cta-wrapper">

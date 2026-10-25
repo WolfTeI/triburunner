@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { Home } from './pages/home/home';
 import { Affiliates } from './pages/affiliates/affiliates';
-import { Admin } from './pages/admin/admin';
 import { Privacy } from './pages/privacy/privacy';
 
 export const routes: Routes = [
@@ -51,19 +50,6 @@ export const routes: Routes = [
           description:
             'Catálogo seleccionado de dispositivos GPS, bandas cardíacas e indumentaria de running con enlaces oficiales de Mercado Libre.',
         },
-      },
-    },
-  },
-  {
-    path: 'admin',
-    component: Admin,
-    data: {
-      seo: {
-        title: 'Panel de Administración & Staff • Tribu Runner',
-        description:
-          'Panel de control de TribuRunner para gestión de códigos promocionales VIP, carreras oficiales, buzón comunitario y staff moderador.',
-        keywords: 'admin tribu runner, panel founder, staff moderacion',
-        ogType: 'website',
       },
     },
   },

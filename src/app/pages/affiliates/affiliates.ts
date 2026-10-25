@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Toolbar } from '../../components/toolbar/toolbar';
 import { Footer } from '../../components/footer/footer';
-import { AdminService } from '../../services/admin.service';
+import { AffiliatesService } from '../../services/affiliates.service';
 
 /**
  * Modelo de datos para representar un producto o equipamiento de afiliado.
@@ -50,7 +50,7 @@ export interface OfficialMerchProduct {
   templateUrl: './affiliates.html',
 })
 export class Affiliates implements OnInit {
-  private readonly adminService = inject(AdminService);
+  private readonly affiliatesService = inject(AffiliatesService);
 
   readonly isDev = isDevMode();
 
@@ -252,7 +252,7 @@ export class Affiliates implements OnInit {
 
   /** Productos combinados entre base y Firestore en tiempo real */
   readonly allProducts = computed<AffiliateProductItem[]>(() => {
-    const firestoreProducts = this.adminService.affiliateProducts();
+    const firestoreProducts = this.affiliatesService.affiliateProducts();
     if (!firestoreProducts.length) {
       return [...this.baseProducts];
     }
@@ -295,7 +295,7 @@ export class Affiliates implements OnInit {
   });
 
   ngOnInit(): void {
-    this.adminService.startRealtimeListeners();
+    // AffiliatesService inicializa sus listeners de Firestore en segundo plano automáticamente
   }
 
   /**
